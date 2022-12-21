@@ -167,6 +167,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateSeekFlag = true;
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        updateSeekFlag = false;
+    }
+
     private void createBottomSheetDialog() {
         if (bottomSheetDialog == null) {
             View view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_player, null);
