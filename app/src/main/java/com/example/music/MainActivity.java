@@ -3,6 +3,7 @@ package com.example.music;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
 import com.example.music.databinding.ActivityMainBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
@@ -31,6 +33,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "MainActivity";
 
     ConstraintLayout bs_main;
-    ImageView songImageView,bsMenu,bs_down_arrow;
+    ImageView songImageView,bsMenu,bs_down_arrow,smallPlayerAlbum;
     Button btNext,btPrevious,btRepeat,btSuffle;
     ToggleButton btPlayPause;
     TextView tvSongName,tvSongEnd,tvSongLive,tvMainSongName;
@@ -75,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NavigationUI.setupWithNavController(navigationView, navController);
 
         tvMainSongName = findViewById(R.id.tv_main_song_name);
+        tvMainSongName.setSelected(true);
+
+        smallPlayerAlbum = findViewById(R.id.music_image);
 
         createBottomSheetDialog();
 
@@ -104,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sharedViewModel.getCurrentSong().observe(this, new Observer<File>() {
             @Override
             public void onChanged(File file) {
+                updateSeekFlag = true;
                 if(mediaPlayer != null){
                     mediaPlayer.stop();
                     mediaPlayer.release();
@@ -112,14 +119,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mediaPlayer = MediaPlayer.create(MainActivity.this, uri);
                 mediaPlayer.start();
                 mediaPlayer.setOnCompletionListener(m_CompletionListener);
-                updateSeekFlag=false;
+                btPlayPause.setChecked(false);
                 bs_seekBar.setMax(mediaPlayer.getDuration());
                 bs_seekBar.setProgress(mediaPlayer.getCurrentPosition());
 
                 tvSongEnd.setText(createTime(mediaPlayer.getDuration()));
 
+                updateSeekFlag=false;//false means start seekbar, this flag due to error on request current duration when no music playing
+
                 tvSongName.setText(file.getName().replace(".mp3",""));
                 tvMainSongName.setText(file.getName().replace(".mp3",""));
+
+                byte[] image = getAlbumArt(file.getPath());
+                if(image != null){
+                    Glide.with(getBaseContext()).asBitmap()
+                            .load(image)
+                            .into(songImageView);
+                    Glide.with(getBaseContext()).asBitmap()
+                            .load(image)
+                            .into(smallPlayerAlbum);
+                }else{
+                    Glide.with(getBaseContext()).asBitmap()
+                            .load(R.drawable.icon)
+                            .into(songImageView);
+                    Glide.with(getBaseContext()).asBitmap()
+                            .load(R.drawable.icon)
+                            .into(smallPlayerAlbum);
+                }
             }
         });
 
@@ -133,6 +159,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        updateSeekFlag = true;
     }
 
     private void createBottomSheetDialog() {
@@ -151,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             bs_seekBar = view.findViewById(R.id.bs_player_seekBar);
             tvSongEnd = view.findViewById(R.id.song_end_tv);
             tvSongLive = view.findViewById(R.id.song_live_tv);
+
+            tvSongName.setSelected(true);
 
             bs_main.setMinimumHeight(Resources.getSystem().getDisplayMetrics().heightPixels);
 
@@ -189,9 +223,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int currentPosition = 0;
 
                 while(true) {
-                    if (updateSeekFlag == false) {
-                        currentPosition = mediaPlayer.getCurrentPosition();
-                        bs_seekBar.setProgress(currentPosition);
+                    if (!updateSeekFlag) {
+                        if(mediaPlayer != null) {
+                            currentPosition = mediaPlayer.getCurrentPosition();
+                            bs_seekBar.setProgress(currentPosition);
+                        }
                     }
                     try {
                         Thread.sleep(500);
@@ -234,8 +270,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     MediaPlayer.OnCompletionListener m_CompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
-            Log.e(TAG, "onCompletion: " );
+            updateSeekFlag = true;
+//            Log.e(TAG, "onCompletionCompletion: " );
             btNext.performClick();
+//            int currentSongNumber = sharedViewModel.getCurrentSongNumber();
+//            int currentSongListSize = sharedViewModel.getCurrentSongListSize();
+//            ArrayList<File> songList = sharedViewModel.getCurrentSongListBackgroundPlay();
+//            if(currentSongNumber!=currentSongListSize-1){
+//                currentSongNumber = currentSongNumber+1;
+//            }else {
+//                currentSongNumber = 0;
+//            }
+//
+//            /////////////Media player access
+//            if(mediaPlayer != null){
+//                mediaPlayer.stop();
+//                mediaPlayer.release();
+//            }
+//            Uri uri = Uri.parse(songList.get(currentSongNumber).toString());
+//            mediaPlayer = MediaPlayer.create(MainActivity.this, uri);
+//            mediaPlayer.start();
+//            mediaPlayer.setOnCompletionListener(m_CompletionListener);
+//            bs_seekBar.setMax(mediaPlayer.getDuration());
+//            bs_seekBar.setProgress(mediaPlayer.getCurrentPosition());
+//
+//            tvSongEnd.setText(createTime(mediaPlayer.getDuration()));
+//            updateSeekFlag = false;
         }
     };
 
@@ -274,6 +334,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else {
             sharedViewModel.setCurrentSongNumber(currentSongListSize-1);
         }
+    }
+
+    private byte[] getAlbumArt(String uri){
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(uri);
+        byte[] art = retriever.getEmbeddedPicture();
+        retriever.release();
+        return art;
     }
 
 }

@@ -15,6 +15,7 @@ import com.example.music.FileAccess.playListModel;
 import java.io.Closeable;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class SharedViewModel extends ViewModel {
     private static final String TAG = "SharedViewModel";
@@ -59,7 +60,7 @@ public class SharedViewModel extends ViewModel {
         mutableCurrentSong.setValue(file);
     }
     public void setCurrentSongNumber(int position){
-        File tempSongList = mutableCurrentSongList.getValue().get(position);
+        File tempSongList = Objects.requireNonNull(mutableCurrentSongList.getValue()).get(position);
         mutableCurrentSong.setValue(tempSongList);
         currentSongNumber.setValue(position);
     }
@@ -70,7 +71,9 @@ public class SharedViewModel extends ViewModel {
     public Integer getCurrentSongNumber(){
         return currentSongNumber.getValue();
     }
-
+    public ArrayList<File> getCurrentSongListBackgroundPlay(){
+        return mutableCurrentSongList.getValue();
+    }
     class LoadPlayList extends AsyncTask<Void,Void,Void> {
         @Override
         protected Void doInBackground(Void... voids) {

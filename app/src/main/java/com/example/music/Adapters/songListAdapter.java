@@ -1,15 +1,18 @@
 package com.example.music.Adapters;
 
 import android.content.Context;
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.music.Models.RecentActivityModels;
 import com.example.music.Models.songListModel;
 import com.example.music.R;
@@ -36,6 +39,12 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         holder.songName.setText(songList.get(position).getSongName());
+//        byte[] image = getAlbumArt(songList.get(position).getPath());
+//        if(image != null){
+//            Glide.with(context).asBitmap()
+//                    .load(image)
+//                    .into(holder.albumImage);
+//        }
     }
     @Override
     public int getItemCount() {
@@ -45,10 +54,12 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
     public class viewHolder extends RecyclerView.ViewHolder {
         TextView songName;
         TextView Duration;
+        ImageView albumImage;
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             songName = itemView.findViewById(R.id.song_name_tv);
             Duration = itemView.findViewById(R.id.song_duration_tv);
+            albumImage = itemView.findViewById(R.id.listAlbumImage);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -60,5 +71,13 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
     }
     public interface OnSongClickListener{
         public void onItemClick(int position);
+    }
+
+    private byte[] getAlbumArt(String uri){
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(uri);
+        byte[] art = retriever.getEmbeddedPicture();
+        retriever.release();
+        return art;
     }
 }

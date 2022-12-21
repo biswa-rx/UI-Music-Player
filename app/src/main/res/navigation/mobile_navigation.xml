@@ -44,6 +44,6 @@
     <fragment
         android:id="@+id/fragment_song_list"
         android:name="com.example.music.drawer_fragment.fragment_song_list"
-        android:label="fragment_song_list"
+        android:label="Song List"
         tools:layout="@layout/fragment_song_list" />
 </navigation>
