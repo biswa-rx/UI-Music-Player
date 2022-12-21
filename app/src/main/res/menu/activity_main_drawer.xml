@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/listenNow"
+            android:icon="@drawable/icon"
+            android:title="@string/listen_now" />
+        <item
+            android:id="@+id/myLibrary"
+            android:icon="@drawable/my_library_img"
+            android:title="@string/my_library" />
+        <item
+            android:id="@+id/playlists"
+            android:icon="@drawable/play_lists"
+            android:title="@string/playlists" />
+    </group>
+    <item android:title="More options"
+        android:menuCategory="secondary">
+        <menu>
+            <item
+                android:id="@+id/action_settings"
+                android:title="Settings"
+                />
+            <item
+                android:id="@+id/action_help"
+                android:title="Help"
+                />
+            <item
+                android:id="@+id/action_feed_back"
+                android:title="Send feedback"
+                />
+        </menu>
+
+    </item>
+</menu>

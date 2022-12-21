@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/listenNow">
+    <fragment
+        android:id="@+id/listenNow"
+        android:name="com.example.music.drawer_fragment.ListenNow"
+        android:label="Listen now"
+        tools:layout="@layout/fragment_listen_now" >
+        <action
+            android:id="@+id/action_listenNow_self"
+            app:destination="@id/listenNow" />
+        <action
+            android:id="@+id/action_listenNow_to_fragment_song_list"
+            app:destination="@id/fragment_song_list" />
+    </fragment>
+    <fragment
+        android:id="@+id/myLibrary"
+        android:name="com.example.music.drawer_fragment.MyLibrary"
+        android:label="My Library"
+        tools:layout="@layout/fragment_my_library" />
+    <fragment
+        android:id="@+id/playlists"
+        android:name="com.example.music.drawer_fragment.Playlists"
+        android:label="Playlists"
+        tools:layout="@layout/fragment_playlists" />
+    <fragment
+        android:id="@+id/action_settings"
+        android:name="com.example.music.drawer_fragment.Settings"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/action_help"
+        android:name="com.example.music.drawer_fragment.Help"
+        android:label="Help"
+        tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/action_feed_back"
+        android:name="com.example.music.drawer_fragment.feedback"
+        android:label="Feedback"
+        tools:layout="@layout/fragment_feedback" />
+    <fragment
+        android:id="@+id/fragment_song_list"
+        android:name="com.example.music.drawer_fragment.fragment_song_list"
+        android:label="fragment_song_list"
+        tools:layout="@layout/fragment_song_list" />
+</navigation>
