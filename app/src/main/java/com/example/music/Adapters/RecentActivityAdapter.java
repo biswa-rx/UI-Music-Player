@@ -43,7 +43,7 @@ public class RecentActivityAdapter extends RecyclerView.Adapter<RecentActivityAd
         RecentActivityModels recentActivityModels = list.get(position);
         holder.imageView.setImageResource(recentActivityModels.getImage());
         holder.songName.setText(recentActivityModels.getSongName());
-        holder.artistName.setText(recentActivityModels.getArtist());
+        holder.artistName.setText(recentActivityModels.getTotal_Song()+" Songs");
     }
 
     @Override
