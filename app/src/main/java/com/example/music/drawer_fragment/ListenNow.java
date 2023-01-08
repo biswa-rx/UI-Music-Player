@@ -53,7 +53,7 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
 
         list = new ArrayList<>();
         list.add(new RecentActivityModels(R.drawable.icon_shuffle,"Shuffle all",""));
-        list.add(new RecentActivityModels(R.drawable.icon,"All song",""));
+//        list.add(new RecentActivityModels(R.drawable.icon,"All song",""));
         list.add(new RecentActivityModels(R.drawable.icon_cloud_network,"Recent song","No"));
 
         recentActivityAdapter = new RecentActivityAdapter(list,context,this);
@@ -85,6 +85,15 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
                 recentActivityAdapter.notifyDataSetChanged();
             }
         });
+        sharedViewModel.getAllSongList().observe(getViewLifecycleOwner(), new Observer<ArrayList<File>>() {
+            @Override
+            public void onChanged(ArrayList<File> files) {
+//                list.remove(1);
+                list.add(1,new RecentActivityModels(R.drawable.icon,"All song",files.size()+""));
+                recentActivityAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override

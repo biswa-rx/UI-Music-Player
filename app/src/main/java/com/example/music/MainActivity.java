@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ConstraintLayout bs_main;
     ImageView songImageView,bsMenu,bs_down_arrow,smallPlayerAlbum;
     Button btNext,btPrevious,btRepeat,btSuffle;
-    ToggleButton btPlayPause;
+    ToggleButton btPlayPause,mainUiPlayBT;
     TextView tvSongName,tvSongEnd,tvSongLive,tvMainSongName;
     SeekBar bs_seekBar;
 
@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvMainSongName.setSelected(true);
 
         smallPlayerAlbum = findViewById(R.id.music_image);
+
+        mainUiPlayBT = findViewById(R.id.play_button_main_ui);
 
         createBottomSheetDialog();
 
@@ -156,6 +158,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mediaPlayer.pause();
                 }else{
                     mediaPlayer.start();
+                }
+            }
+        });
+
+        mainUiPlayBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mediaPlayer!=null) {
+                    if (mainUiPlayBT.isChecked()) {
+                        mediaPlayer.pause();
+                    } else {
+                        mediaPlayer.start();
+                    }
                 }
             }
         });
