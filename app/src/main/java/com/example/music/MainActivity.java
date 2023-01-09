@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     ConstraintLayout bs_main;
     ImageView songImageView,bsMenu,bs_down_arrow,smallPlayerAlbum;
-    Button btNext,btPrevious,btRepeat,btSuffle;
+    ImageButton btNext,btPrevious,btRepeat,btSuffle;;
     ToggleButton btPlayPause,mainUiPlayBT;
     TextView tvSongName,tvSongEnd,tvSongLive,tvMainSongName;
     SeekBar bs_seekBar;
@@ -90,8 +92,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bottom_sheet_player.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bottomSheetDialog.show();
-                updateSeekFlag = false;
+                if(mediaPlayer!=null){
+                    bottomSheetDialog.show();
+                    updateSeekFlag = false;
+                }else{
+                    Toast.makeText(MainActivity.this,"Currently no song playing", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

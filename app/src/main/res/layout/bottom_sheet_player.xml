@@ -134,14 +134,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bs_player_seekBar">
 
-            <Button
+            <ImageButton
                 android:id="@+id/repeat_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/icon_repeat_off" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/previous_button"
                 android:layout_width="40dp"
                 android:layout_height="35dp"
@@ -157,17 +157,17 @@
                 android:textOff=""
                 android:textOn="" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/next_button"
                 android:layout_width="40dp"
                 android:layout_height="35dp"
                 android:layout_marginHorizontal="10dp"
                 android:background="@drawable/icon_next" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/suffle_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/icon_shuffle_off" />
         </LinearLayout>

@@ -69,8 +69,8 @@
             </LinearLayout>
             <ToggleButton
                 android:id="@+id/play_button_main_ui"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="5dp"
                 android:textOff=""
                 android:textOn=""
