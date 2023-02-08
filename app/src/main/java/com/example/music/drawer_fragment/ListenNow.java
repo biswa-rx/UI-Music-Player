@@ -53,8 +53,8 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
 
         list = new ArrayList<>();
         list.add(new RecentActivityModels(R.drawable.icon_shuffle,"Shuffle all",""));
-        list.add(new RecentActivityModels(R.drawable.icon,"All song","Unknown artist"));
-        list.add(new RecentActivityModels(R.drawable.icon_cloud_network,"Recent song","Cloud Song"));
+//        list.add(new RecentActivityModels(R.drawable.icon,"All song",""));
+        list.add(new RecentActivityModels(R.drawable.icon_cloud_network,"Recent song","No"));
 
         recentActivityAdapter = new RecentActivityAdapter(list,context,this);
         recentRecyclerView.setAdapter(recentActivityAdapter);
@@ -71,12 +71,13 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+
         sharedViewModel.getSongPlaylist().observe(getViewLifecycleOwner(), new Observer<ArrayList<playListModel>>() {
             @Override
             public void onChanged(ArrayList<playListModel> playListModels) {
                 if(!playListModels.isEmpty()){
                     for(int i=0;i<playListModels.size();i++){
-                        list.add(new RecentActivityModels(R.drawable.icon_playlist,playListModels.get(i).getPlayListName(),"Unknown Aritst"));
+                        list.add(new RecentActivityModels(R.drawable.icon_playlist,playListModels.get(i).getPlayListName(),playListModels.get(i).getSongList().size()+""));
                     }
                 }else{
                     Toast.makeText(requireActivity(),"NO LOCAL SONG FILE",Toast.LENGTH_SHORT).show();
@@ -84,6 +85,15 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
                 recentActivityAdapter.notifyDataSetChanged();
             }
         });
+        sharedViewModel.getAllSongList().observe(getViewLifecycleOwner(), new Observer<ArrayList<File>>() {
+            @Override
+            public void onChanged(ArrayList<File> files) {
+//                list.remove(1);
+                list.add(1,new RecentActivityModels(R.drawable.icon,"All song",files.size()+""));
+                recentActivityAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override

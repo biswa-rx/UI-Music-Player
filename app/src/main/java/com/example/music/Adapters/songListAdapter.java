@@ -39,7 +39,7 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         holder.songName.setText(songList.get(position).getSongName());
-//        byte[] image = getAlbumArt(songList.get(position).getPath());
+        byte[] image = getAlbumArt(songList.get(position).getPath());
 //        if(image != null){
 //            Glide.with(context).asBitmap()
 //                    .load(image)
@@ -58,7 +58,6 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             songName = itemView.findViewById(R.id.song_name_tv);
-            Duration = itemView.findViewById(R.id.song_duration_tv);
             albumImage = itemView.findViewById(R.id.listAlbumImage);
 
             itemView.setOnClickListener(new View.OnClickListener() {

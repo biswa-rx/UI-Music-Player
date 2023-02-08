@@ -3,12 +3,12 @@ package com.example.music.Models;
 public class RecentActivityModels {
     int image;
     String songName;
-    String Artist;
+    String Total_Song;
 
-    public RecentActivityModels(int image, String songName, String artist) {
+    public RecentActivityModels(int image, String songName, String total_Song) {
         this.image = image;
         this.songName = songName;
-        Artist = artist;
+        Total_Song = total_Song;
     }
 
     public int getImage() {
@@ -27,11 +27,12 @@ public class RecentActivityModels {
         this.songName = songName;
     }
 
-    public String getArtist() {
-        return Artist;
+    public String getTotal_Song() {
+        return Total_Song;
     }
 
-    public void setArtist(String artist) {
-        Artist = artist;
+    public void setTotal_Song(String total_Song) {
+        Total_Song = total_Song;
     }
+
 }

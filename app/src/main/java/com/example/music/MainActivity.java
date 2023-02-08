@@ -1,20 +1,29 @@
 package com.example.music;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +31,11 @@ import com.example.music.databinding.ActivityMainBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -45,11 +58,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ConstraintLayout bottom_sheet_player;
 
     private static final String TAG = "MainActivity";
+    final int REQUEST_CODE_READ_EXTERNAL_STORAGE = 1234;
 
     ConstraintLayout bs_main;
     ImageView songImageView,bsMenu,bs_down_arrow,smallPlayerAlbum;
-    Button btNext,btPrevious,btRepeat,btSuffle;
-    ToggleButton btPlayPause;
+    ImageButton btNext,btPrevious,btRepeat,btSuffle;;
+    ToggleButton btPlayPause,mainUiPlayBT;
     TextView tvSongName,tvSongEnd,tvSongLive,tvMainSongName;
     SeekBar bs_seekBar;
 
@@ -77,10 +91,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage("We need permission storage access")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_READ_EXTERNAL_STORAGE);
+                            }//Second Time
+                        })
+                        .show();
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_READ_EXTERNAL_STORAGE);//First time
+            }
+        }
+
         tvMainSongName = findViewById(R.id.tv_main_song_name);
         tvMainSongName.setSelected(true);
 
         smallPlayerAlbum = findViewById(R.id.music_image);
+
+        mainUiPlayBT = findViewById(R.id.play_button_main_ui);
 
         createBottomSheetDialog();
 
@@ -88,8 +121,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bottom_sheet_player.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bottomSheetDialog.show();
-                updateSeekFlag = false;
+                if(mediaPlayer!=null){
+                    bottomSheetDialog.show();
+                    updateSeekFlag = false;
+                }else{
+                    Toast.makeText(MainActivity.this,"Currently no song playing", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -156,6 +193,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mediaPlayer.pause();
                 }else{
                     mediaPlayer.start();
+                }
+            }
+        });
+
+        mainUiPlayBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mediaPlayer!=null) {
+                    if (mainUiPlayBT.isChecked()) {
+                        mediaPlayer.pause();
+                    } else {
+                        mediaPlayer.start();
+                    }
                 }
             }
         });
@@ -348,6 +398,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         byte[] art = retriever.getEmbeddedPicture();
         retriever.release();
         return art;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+
+        if (requestCode == REQUEST_CODE_READ_EXTERNAL_STORAGE) {
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Permission Granted
+//                textView.setText("Permission is Granted");
+                triggerRebirth(this);
+            } else {
+                //Permission NOT granted
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    //This block here means PERMANENTLY DENIED PERMISSION
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage("You have permanently denied this permission, go to settings to enable this permission")
+                            .setPositiveButton("Go to settings", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    gotoApplicationSettings();
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .setCancelable(false)
+                            .show();
+
+
+                } else {
+                    //
+//                    textView.setText("Permission Not granted");
+                    Toast.makeText(this,"Storage permission not granted",Toast.LENGTH_SHORT).show();
+                }
+            }
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void gotoApplicationSettings() {
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", this.getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+
+    }
+    public static void triggerRebirth(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
+        ComponentName componentName = intent.getComponent();
+        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+        context.startActivity(mainIntent);
+        Runtime.getRuntime().exit(0);
     }
 
 }
