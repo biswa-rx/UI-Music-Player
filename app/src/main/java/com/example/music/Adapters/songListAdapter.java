@@ -58,7 +58,6 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             songName = itemView.findViewById(R.id.song_name_tv);
-            Duration = itemView.findViewById(R.id.song_duration_tv);
             albumImage = itemView.findViewById(R.id.listAlbumImage);
 
             itemView.setOnClickListener(new View.OnClickListener() {
