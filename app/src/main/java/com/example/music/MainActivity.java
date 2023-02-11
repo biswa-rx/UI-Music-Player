@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
@@ -308,6 +309,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 || super.onSupportNavigateUp();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId){
+            case R.id.menu_action_refresh:
+                triggerRebirth(this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private String createTime(int Duration) {
         String time="0";
         int sec=Duration/1000;
@@ -455,5 +467,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         context.startActivity(mainIntent);
         Runtime.getRuntime().exit(0);
     }
-
 }
