@@ -232,7 +232,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             btSuffle = view.findViewById(R.id.suffle_button);
             btRepeat = view.findViewById(R.id.repeat_button);
             songImageView = view.findViewById(R.id.bs_song_image);
-            bsMenu = view.findViewById(R.id.bs_menu);
             tvSongName = view.findViewById(R.id.bs_song_name_tv);
             bs_down_arrow = view.findViewById(R.id.down_arrow_button);
             bs_main = view.findViewById(R.id.bs_main_layout);
@@ -248,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             btPrevious.setOnClickListener(this);
             btSuffle.setOnClickListener(this);
             btRepeat.setOnClickListener(this);
-            bsMenu.setOnClickListener(this);
             bs_down_arrow.setOnClickListener(this);
 
             bottomSheetDialog = new BottomSheetDialog(this);
