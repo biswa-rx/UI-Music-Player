@@ -363,6 +363,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.previous_button:
                 previous_music();
                 break;
+            case R.id.down_arrow_button:
+                bottomSheetDialog.dismiss();
+                break;
         }
     }
 
