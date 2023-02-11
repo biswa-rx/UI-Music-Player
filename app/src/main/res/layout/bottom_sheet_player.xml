@@ -40,7 +40,7 @@
             android:fadingEdge="horizontal"
             android:marqueeRepeatLimit="marquee_forever"
             android:text="Song Name"
-            android:textColor="#7300FF"
+            android:textColor="#FF00C8"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,8 +53,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_marginTop="80dp"
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp"
@@ -64,8 +64,9 @@
 
         <ImageView
             android:id="@+id/bs_song_image"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
             android:padding="20dp"
             android:src="@drawable/icon" />
     </androidx.cardview.widget.CardView>
