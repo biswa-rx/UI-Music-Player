@@ -36,6 +36,8 @@ public class SplashActivity extends AppCompatActivity {
             } else {
                 ActivityCompat.requestPermissions(SplashActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_READ_EXTERNAL_STORAGE);//First time
             }
+        }else{
+            gotoMainActivity();
         }
     }
 
