@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void createBottomSheetDialog() {
         if (bottomSheetDialog == null) {
-            View view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_player, null);
+            View view = LayoutInflater.from(this).inflate(R.layout.activity_play_music, null);
             btPlayPause = view.findViewById(R.id.play_button);
             btNext = view.findViewById(R.id.next_button);
             btPrevious = view.findViewById(R.id.previous_button);
