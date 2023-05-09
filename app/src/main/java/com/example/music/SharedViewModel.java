@@ -36,8 +36,12 @@ public class SharedViewModel extends ViewModel {
         return mutableCurrentSongList;
     }
 
-    public Integer getCurrentSongListSize() {
-        return mutableCurrentSongList.getValue().size();
+    public int getCurrentSongListSize() {
+        int size = 0;
+        if(mutableCurrentSongList.getValue()!=null) {
+            size = mutableCurrentSongList.getValue().size();
+        }
+        return size;
     }
 
     public void setMutableCurrentSongListFromFolder(int position){
@@ -49,6 +53,9 @@ public class SharedViewModel extends ViewModel {
 
     public void setMutableCurrentSongList(ArrayList<File> songList){
         mutableCurrentSongList.setValue(songList);
+    }
+    public ArrayList<File> getSelectedSongList(){
+        return mutableCurrentSongList.getValue();
     }
 
 

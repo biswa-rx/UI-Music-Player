@@ -9,7 +9,9 @@ public class MediaPlayer {
     private Context context;
     private Uri uri;
     private boolean isPlaying;
+    android.media.MediaPlayer mediaPlayer;
 
+    int musicDuration=0;
     private MediaPlayer() {
         // Private constructor to prevent instantiation
     }
@@ -25,16 +27,15 @@ public class MediaPlayer {
         this.context = context;
         this.uri = uri;
         // Implement play logic here using the provided context and Uri
-        // Example:
-        // mediaPlayer = android.media.MediaPlayer.create(context, uri);
-        // mediaPlayer.start();
-        isPlaying = true;
+         mediaPlayer = android.media.MediaPlayer.create(context, uri);
+         musicDuration = mediaPlayer.getDuration();
+         mediaPlayer.start();
+         isPlaying = true;
     }
 
     public void pause() {
         // Implement pause logic here
-        // Example:
-        // mediaPlayer.pause();
+        mediaPlayer.pause();
         isPlaying = false;
     }
 
@@ -43,4 +44,8 @@ public class MediaPlayer {
     }
 
     // Additional methods and properties
+    public int getMusicDuration() {
+        return musicDuration;
+    }
+
 }

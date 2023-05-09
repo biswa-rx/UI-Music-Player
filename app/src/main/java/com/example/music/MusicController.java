@@ -24,4 +24,12 @@ public class MusicController {
     }
 
     // Additional music control methods
+    public void nextMusic(){
+
+    }
+
+    public void previousMusic(){
+
+    }
+
 }
