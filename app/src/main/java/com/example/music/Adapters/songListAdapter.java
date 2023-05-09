@@ -69,7 +69,7 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
         }
     }
     public interface OnSongClickListener{
-        public void onItemClick(int position);
+        void onItemClick(int position);
     }
 
     private byte[] getAlbumArt(String uri){

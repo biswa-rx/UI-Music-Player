@@ -1,5 +1,7 @@
 package com.example.music.drawer_fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,8 +19,11 @@ import android.widget.Toast;
 import com.example.music.Adapters.RecentActivityAdapter;
 import com.example.music.Adapters.songListAdapter;
 import com.example.music.FileAccess.playListModel;
+import com.example.music.MainActivity;
 import com.example.music.Models.RecentActivityModels;
 import com.example.music.Models.songListModel;
+import com.example.music.MusicController;
+import com.example.music.MusicService;
 import com.example.music.R;
 import com.example.music.SharedViewModel;
 
@@ -56,6 +61,21 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
 
     @Override
     public void onItemClick(int position) {
-        sharedViewModel.setCurrentSongNumber(position);
+//        sharedViewModel.setCurrentSongNumber(position);
+        ArrayList<File> songList = sharedViewModel.getCurrentSongList().getValue();
+        File file = songList.get(position);
+        Uri uri = Uri.parse(file.toString());
+//        if(MusicController.getInstance().isMusicPlaying()){
+//            Intent playIntent = new Intent(requireContext(), MusicService.class);
+//            requireContext().stopService(playIntent);
+//            playIntent.setAction("PLAY");
+//            playIntent.putExtra("URI", uri);
+//            requireContext().startService(playIntent);
+//        }else {
+            Intent playIntent = new Intent(requireContext(), MusicService.class);
+            playIntent.setAction("PLAY");
+            playIntent.putExtra("URI", uri);
+            requireContext().startService(playIntent);
+//        }
     }
 }

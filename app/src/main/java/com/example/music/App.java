@@ -5,11 +5,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
+import androidx.lifecycle.ViewModelProvider;
+
 public class App extends Application {
+    SharedViewModel sharedViewModel;
     public static final String CHANNEL_ID = "exampleServiceChannel";
     @Override
     public void onCreate() {
         super.onCreate();
+        sharedViewModel = new ViewModelProvider.AndroidViewModelFactory(this).create(SharedViewModel.class);
 
         createNotificationChannel();
     }
@@ -26,4 +30,5 @@ public class App extends Application {
             manager.createNotificationChannel(serviceChannel);
         }
     }
+
 }

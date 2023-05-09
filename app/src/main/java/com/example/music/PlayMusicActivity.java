@@ -49,4 +49,69 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
 
     }
+
+//       bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//        @Override
+//        public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+//            String currentTime = createTime(progress);
+//            tvSongLive.setText(currentTime);
+//        }
+//        @Override
+//        public void onStartTrackingTouch(SeekBar seekBar) {
+//            updateSeekFlag = true;
+//        }
+//        @Override
+//        public void onStopTrackingTouch(SeekBar seekBar) {
+//            mediaPlayer.seekTo(seekBar.getProgress());
+//            updateSeekFlag = false;
+//
+//        }
+//    });
+//
+//    update_seek = new Thread(){
+//        @Override
+//        public void run() {
+//            int currentPosition = 0;
+//
+//            while(true) {
+//                if (!updateSeekFlag) {
+//                    if(mediaPlayer != null) {
+//                        currentPosition = mediaPlayer.getCurrentPosition();
+//                        bs_seekBar.setProgress(currentPosition);
+//                    }
+//                }
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    };
+//        update_seek.start();
 }
+
+//btPlayPause.setOnClickListener(new View.OnClickListener() {
+//@Override
+//public void onClick(View view) {
+//        if(btPlayPause.isChecked()){
+//        mediaPlayer.pause();
+//        }else{
+//        mediaPlayer.start();
+//        }
+//        }
+//        });
+//
+//        mainUiPlayBT.setOnClickListener(new View.OnClickListener() {
+//@Override
+//public void onClick(View view) {
+//        if(mediaPlayer!=null) {
+//        if (mainUiPlayBT.isChecked()) {
+//        mediaPlayer.pause();
+//        } else {
+//        mediaPlayer.start();
+//        }
+//        }
+//        }
+//        });
+//}

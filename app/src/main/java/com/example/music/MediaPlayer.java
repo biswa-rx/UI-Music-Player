@@ -47,5 +47,11 @@ public class MediaPlayer {
     public int getMusicDuration() {
         return musicDuration;
     }
+    public void clear(){
+        if(mediaPlayer != null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+    }
 
 }

@@ -54,9 +54,6 @@ public class SharedViewModel extends ViewModel {
     public void setMutableCurrentSongList(ArrayList<File> songList){
         mutableCurrentSongList.setValue(songList);
     }
-    public ArrayList<File> getSelectedSongList(){
-        return mutableCurrentSongList.getValue();
-    }
 
 
     public LiveData<ArrayList<File>> getAllSongList() {
