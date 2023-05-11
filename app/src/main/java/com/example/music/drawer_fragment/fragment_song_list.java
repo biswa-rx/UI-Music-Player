@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.music.Adapters.RecentActivityAdapter;
 import com.example.music.Adapters.songListAdapter;
+import com.example.music.App;
 import com.example.music.FileAccess.playListModel;
 import com.example.music.MainActivity;
 import com.example.music.Models.RecentActivityModels;
@@ -30,11 +31,12 @@ import com.example.music.SharedViewModel;
 import java.io.File;
 import java.util.ArrayList;
 
-public class fragment_song_list extends Fragment implements songListAdapter.OnSongClickListener{
+public class fragment_song_list extends Fragment implements songListAdapter.OnSongClickListener {
     SharedViewModel sharedViewModel;
     songListAdapter listAdapter;
     RecyclerView recyclerView;
     ArrayList<songListModel> songList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,13 +47,13 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
         sharedViewModel.getCurrentSongList().observe(getViewLifecycleOwner(), new Observer<ArrayList<File>>() {
             @Override
             public void onChanged(ArrayList<File> files) {
-                for(int i=0;i<files.size();i++){
-                    songList.add(new songListModel(files.get(i).getName(),"10",files.get(i).getPath()));
+                for (int i = 0; i < files.size(); i++) {
+                    songList.add(new songListModel(files.get(i).getName(), "10", files.get(i).getPath()));
                 }
-                listAdapter = new songListAdapter(songList,container.getContext(), fragment_song_list.this);
+                listAdapter = new songListAdapter(songList, container.getContext(), fragment_song_list.this);
                 recyclerView.setAdapter(listAdapter);
 
-                LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
+                LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
                 recyclerView.setLayoutManager(layoutManager);
             }
         });
@@ -61,21 +63,15 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
 
     @Override
     public void onItemClick(int position) {
-//        sharedViewModel.setCurrentSongNumber(position);
         ArrayList<File> songList = sharedViewModel.getCurrentSongList().getValue();
         File file = songList.get(position);
         Uri uri = Uri.parse(file.toString());
-//        if(MusicController.getInstance().isMusicPlaying()){
-//            Intent playIntent = new Intent(requireContext(), MusicService.class);
-//            requireContext().stopService(playIntent);
-//            playIntent.setAction("PLAY");
-//            playIntent.putExtra("URI", uri);
-//            requireContext().startService(playIntent);
-//        }else {
-            Intent playIntent = new Intent(requireContext(), MusicService.class);
-            playIntent.setAction("PLAY");
-            playIntent.putExtra("URI", uri);
-            requireContext().startService(playIntent);
-//        }
+        Intent playIntent = new Intent(requireContext(), MusicService.class);
+        playIntent.setAction("PLAY");
+        playIntent.putExtra("URI", uri);
+        requireContext().startService(playIntent);
+        sharedViewModel.setCurrentSongNumber(position);
+        MusicController.getInstance().setSongNumber(position);
+        MusicController.getInstance().setSongList(songList);
     }
 }

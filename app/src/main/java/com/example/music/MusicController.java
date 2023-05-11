@@ -5,10 +5,17 @@ import android.net.Uri;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import java.io.File;
+import java.util.ArrayList;
+
 //For Controlling music playback
 public class MusicController {
     private static MediaPlayer mediaPlayer;
+    private static int currentSongNumber = 0;
 
+    private ArrayList<File> songList;
+
+    //Singleton instance
     private static MusicController instance;
     public static synchronized MusicController getInstance() {
         if (instance == null) {
@@ -19,10 +26,21 @@ public class MusicController {
     public MusicController() {
         mediaPlayer = MediaPlayer.getInstance();
     }
-
     public void playMusic(Context context, Uri uri) {
         mediaPlayer.clear();
         mediaPlayer.play(context, uri);
+    }
+    public void setSongList(ArrayList<File> songList){
+        this.songList = songList;
+    }
+    public ArrayList<File> getSongList(){
+        return songList;
+    }
+    public void setSongNumber(int songNumber){
+        currentSongNumber = songNumber;
+    }
+    public int getCurrentSongNumber(){
+        return currentSongNumber;
     }
 
     public void pauseMusic() {
@@ -36,15 +54,17 @@ public class MusicController {
     // Additional music control methods
     public void nextMusic(){
 
+
     }
 
     public void previousMusic(){
 
     }
 
-    public void setSongNumber(int songNumber){
+    public void resumeMusic(){
 
     }
+
 
 }
 

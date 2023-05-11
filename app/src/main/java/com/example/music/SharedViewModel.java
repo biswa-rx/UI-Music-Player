@@ -55,20 +55,20 @@ public class SharedViewModel extends ViewModel {
         mutableCurrentSongList.setValue(songList);
     }
 
-
     public LiveData<ArrayList<File>> getAllSongList() {
         return mutableAllSongList;
     }
-
 
     public LiveData<File> getCurrentSong () { return mutableCurrentSong;}
     public void setCurrentSong(File file) {
         mutableCurrentSong.setValue(file);
     }
     public void setCurrentSongNumber(int position){
-        File tempSongList = Objects.requireNonNull(mutableCurrentSongList.getValue()).get(position);
-        mutableCurrentSong.setValue(tempSongList);
-        currentSongNumber.setValue(position);
+//        if(mutableCurrentSongList.getValue()!= null) {
+            File tempSongList = mutableCurrentSongList.getValue().get(position);
+            mutableCurrentSong.setValue(tempSongList);
+            currentSongNumber.setValue(position);
+//        }
     }
     public LiveData<Integer> getLiveCurrentSongNumber() {
         return currentSongNumber;
@@ -76,9 +76,6 @@ public class SharedViewModel extends ViewModel {
 
     public Integer getCurrentSongNumber(){
         return currentSongNumber.getValue();
-    }
-    public ArrayList<File> getCurrentSongListBackgroundPlay(){
-        return mutableCurrentSongList.getValue();
     }
     class LoadPlayList extends AsyncTask<Void,Void,Void> {
         @Override

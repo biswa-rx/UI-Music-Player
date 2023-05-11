@@ -2,8 +2,11 @@ package com.example.music;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.res.Resources;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -12,17 +15,68 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
+
+import java.io.File;
+import java.util.ArrayList;
+
 public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener{
+    private SharedViewModel sharedViewModel;
     ConstraintLayout bs_main;
-    ImageView songImageView,bsMenu,bs_down_arrow,smallPlayerAlbum;
+    ImageView songImageView,bs_down_arrow;
     ImageButton btNext,btPrevious,btRepeat,btSuffle;;
-    ToggleButton btPlayPause,mainUiPlayBT;
-    TextView tvSongName,tvSongEnd,tvSongLive,tvMainSongName;
+    ToggleButton btPlayPause;
+    TextView tvSongName,tvSongEnd,tvSongLive;
     SeekBar bs_seekBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_music);
+        initUi();
+        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        sharedViewModel.getCurrentSong().observe(this, new Observer<File>() {
+            @Override
+            public void onChanged(File file) {
+                btPlayPause.setChecked(false);
+                tvSongName.setText(file.getName().replace(".mp3",""));
+
+                byte[] image = getAlbumArt(file.getPath());
+                if(image != null){
+                    Glide.with(getBaseContext()).asBitmap()
+                            .load(image)
+                            .into(songImageView);
+                }else{
+                    Glide.with(getBaseContext()).asBitmap()
+                            .load(R.drawable.icon)
+                            .into(songImageView);
+                }
+            }
+        });
+
+        File file = MusicController.getInstance().getSongList()
+                .get(MusicController.getInstance().getCurrentSongNumber());
+        btPlayPause.setChecked(false);
+        tvSongName.setText(file.getName().replace(".mp3",""));
+
+        byte[] image = getAlbumArt(file.getPath());
+        if(image != null){
+            Glide.with(getBaseContext()).asBitmap()
+                    .load(image)
+                    .into(songImageView);
+        }else{
+            Glide.with(getBaseContext()).asBitmap()
+                    .load(R.drawable.icon)
+                    .into(songImageView);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        sharedViewModel.setCurrentSongNumber(MusicController.getInstance().getCurrentSongNumber());
+    }
+
+    void initUi(){
         btPlayPause = findViewById(R.id.play_button);
         btNext = findViewById(R.id.next_button);
         btPrevious = findViewById(R.id.previous_button);
@@ -45,9 +99,17 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         bs_down_arrow.setOnClickListener(this);
     }
 
+
     @Override
     public void onClick(View view) {
 
+    }
+    private byte[] getAlbumArt(String uri){
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(uri);
+        byte[] art = retriever.getEmbeddedPicture();
+        retriever.release();
+        return art;
     }
 
 //       bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

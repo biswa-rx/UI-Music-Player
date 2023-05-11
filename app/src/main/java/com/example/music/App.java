@@ -5,7 +5,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
-import androidx.lifecycle.ViewModelProvider;
 
 public class App extends Application {
     SharedViewModel sharedViewModel;
@@ -13,7 +12,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        sharedViewModel = new ViewModelProvider.AndroidViewModelFactory(this).create(SharedViewModel.class);
 
         createNotificationChannel();
     }
