@@ -44,6 +44,15 @@
         <service
             android:name=".MusicService"
             android:foregroundServiceType="mediaProjection|location|connectedDevice" />
+        <receiver
+            android:name=".NotificationActionReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="ACTION_PLAY" />
+                <action android:name="ACTION_NEXT" />
+                <action android:name="ACTION_PREVIOUS" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

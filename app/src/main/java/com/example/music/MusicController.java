@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class MusicController {
     private static MediaPlayer mediaPlayer;
     private static int currentSongNumber = 0;
-
     private ArrayList<File> songList;
 
     //Singleton instance
@@ -29,6 +28,9 @@ public class MusicController {
     public void playMusic(Context context, Uri uri) {
         mediaPlayer.clear();
         mediaPlayer.play(context, uri);
+    }
+    public boolean isMusicPaused(){
+        return mediaPlayer.isPause();
     }
     public void setSongList(ArrayList<File> songList){
         this.songList = songList;
@@ -51,6 +53,9 @@ public class MusicController {
 
     public boolean isMusicPlaying() {
         return mediaPlayer.isPlaying();
+    }
+    public void justPlay(){
+        mediaPlayer.start();
     }
 
     // Additional music control methods

@@ -11,9 +11,9 @@ public class MediaPlayer {
     private Context context;
     private Uri uri;
     private boolean isPlaying;
+    private boolean isPause;
     android.media.MediaPlayer mediaPlayer;
     NotificationCallback notificationCallback;
-
     int musicDuration=0;
     private MediaPlayer() {
         // Private constructor to prevent instantiation
@@ -37,12 +37,21 @@ public class MediaPlayer {
             notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
         }
          isPlaying = true;
+        isPause = false;
+    }
+    public void start(){
+        mediaPlayer.start();
+        isPlaying = true;
+        isPause = false;
     }
 
     public void pause() {
         // Implement pause logic here
         mediaPlayer.pause();
-        isPlaying = false;
+        isPause = true;
+    }
+    public boolean isPause(){
+        return isPause;
     }
 
     public boolean isPlaying() {
@@ -58,6 +67,7 @@ public class MediaPlayer {
             mediaPlayer.stop();
             mediaPlayer.release();
         }
+        isPlaying = false;
     }
     public void setNotificationCallback(NotificationCallback callback) {
         this.notificationCallback = callback;
