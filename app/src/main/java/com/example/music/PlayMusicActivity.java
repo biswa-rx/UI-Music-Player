@@ -53,21 +53,21 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
-        File file = MusicController.getInstance().getSongList()
-                .get(MusicController.getInstance().getCurrentSongNumber());
-        btPlayPause.setChecked(false);
-        tvSongName.setText(file.getName().replace(".mp3",""));
-
-        byte[] image = getAlbumArt(file.getPath());
-        if(image != null){
-            Glide.with(getBaseContext()).asBitmap()
-                    .load(image)
-                    .into(songImageView);
-        }else{
-            Glide.with(getBaseContext()).asBitmap()
-                    .load(R.drawable.icon)
-                    .into(songImageView);
-        }
+//        File file = MusicController.getInstance().getSongList()
+//                .get(MusicController.getInstance().getCurrentSongNumber());
+//        btPlayPause.setChecked(false);
+//        tvSongName.setText(file.getName().replace(".mp3",""));
+//
+//        byte[] image = getAlbumArt(file.getPath());
+//        if(image != null){
+//            Glide.with(getBaseContext()).asBitmap()
+//                    .load(image)
+//                    .into(songImageView);
+//        }else{
+//            Glide.with(getBaseContext()).asBitmap()
+//                    .load(R.drawable.icon)
+//                    .into(songImageView);
+//        }
     }
 
     @Override

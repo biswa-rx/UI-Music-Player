@@ -126,9 +126,6 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
-        if(MusicController.getInstance().isMusicPlaying()) {
-            sharedViewModel.setCurrentSongNumber(MusicController.getInstance().getCurrentSongNumber());
-        }
     }
 
     @Override

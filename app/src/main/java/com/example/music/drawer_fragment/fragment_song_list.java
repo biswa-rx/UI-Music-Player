@@ -62,6 +62,11 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onItemClick(int position) {
         ArrayList<File> songList = sharedViewModel.getCurrentSongList().getValue();
         File file = songList.get(position);

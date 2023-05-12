@@ -19,11 +19,11 @@ import java.util.Objects;
 
 public class SharedViewModel extends ViewModel {
     private static final String TAG = "SharedViewModel";
-    private MutableLiveData<ArrayList<playListModel>> mutablePlayList =  new MutableLiveData<>();
-    private MutableLiveData<ArrayList<File>> mutableAllSongList = new MutableLiveData<>();
-    private MutableLiveData<ArrayList<File>> mutableCurrentSongList = new MutableLiveData<>();
-    private MutableLiveData<File> mutableCurrentSong = new MutableLiveData<>();
-    private MutableLiveData<Integer> currentSongNumber = new MutableLiveData<>();
+    private static MutableLiveData<ArrayList<playListModel>> mutablePlayList =  new MutableLiveData<>();
+    private static MutableLiveData<ArrayList<File>> mutableAllSongList = new MutableLiveData<>();
+    private static MutableLiveData<ArrayList<File>> mutableCurrentSongList = new MutableLiveData<>();
+    private static MutableLiveData<File> mutableCurrentSong = new MutableLiveData<>();
+    private static MutableLiveData<Integer> currentSongNumber = new MutableLiveData<>();
 
     public LiveData<ArrayList<playListModel>> getSongPlaylist() {
         if (mutablePlayList.getValue() == null){
