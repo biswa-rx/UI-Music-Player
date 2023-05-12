@@ -37,7 +37,7 @@ public class MusicService extends Service implements NotificationCallback {
     static NotificationManager notificationManager;
     public static final int NOTIFICATION_ID = 124;
     private boolean isPlaying;
-    PendingIntent playPendingIntent,previousPendingIntent,nextPendingIntent,stopPendingIntent;
+    PendingIntent playPendingIntent,previousPendingIntent,nextPendingIntent;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -86,7 +86,6 @@ public class MusicService extends Service implements NotificationCallback {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         if (intent != null && intent.getAction() != null) {
             String action = intent.getAction();
 

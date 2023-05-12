@@ -7,54 +7,51 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+    <LinearLayout
+        android:id="@+id/aboutNameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal"
+        android:layout_marginHorizontal="30dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/down_arrow_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/icon_arrow_down"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/bs_song_name_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
             android:ellipsize="marquee"
+            android:layout_marginBottom="10dp"
             android:fadingEdge="horizontal"
+            android:gravity="center"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:text="Song Name"
             android:textColor="#FF00C8"
-            android:textSize="20sp"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/bs_song_artist_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="Artist"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="100dp"
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,18 +62,19 @@
             android:id="@+id/bs_song_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/icon" />
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintVertical_bias="0.703">
 
         <SeekBar
             android:id="@+id/bs_player_seekBar"
@@ -84,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="25dp"
             android:layout_marginTop="44dp"
-            android:progressBackgroundTint="#000000"
+            android:progressBackgroundTint="#FFFFFF"
             android:progressTint="#0051FF"
             android:thumbTint="#03A9F4"
             app:layout_constraintEnd_toEndOf="parent"
@@ -97,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="00:00"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@+id/bs_player_seekBar"
             app:layout_constraintTop_toBottomOf="@+id/bs_player_seekBar" />
 
@@ -107,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="00:00"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="@+id/bs_player_seekBar"
             app:layout_constraintTop_toBottomOf="@+id/bs_player_seekBar" />
 
@@ -128,6 +126,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/white"
                 android:background="@drawable/icon_repeat_off" />
 
             <ImageButton
@@ -158,6 +157,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
+                android:backgroundTint="@color/white"
                 android:background="@drawable/icon_shuffle_off" />
         </LinearLayout>
 

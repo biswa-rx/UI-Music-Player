@@ -33,15 +33,12 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity{
 
+    private static final String TAG = "MainActivity";
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private SharedViewModel sharedViewModel;
     MusicController musicController;
     ConstraintLayout bottom_sheet_player;
-
-    private static final String TAG = "MainActivity";
-
-
     ImageView smallPlayerAlbum;
     ToggleButton mainUiPlayBT;
     TextView tvMainSongName;
@@ -134,7 +131,6 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-
     private byte[] getAlbumArt(String uri){
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(uri);
@@ -142,7 +138,6 @@ public class MainActivity extends AppCompatActivity{
         retriever.release();
         return art;
     }
-
 
     public static void triggerRebirth(Context context) {
         PackageManager packageManager = context.getPackageManager();
@@ -153,9 +148,4 @@ public class MainActivity extends AppCompatActivity{
         Runtime.getRuntime().exit(0);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        Animatoo.INSTANCE.animateSlideUp(this);
-    }
 }

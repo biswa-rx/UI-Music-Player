@@ -1,9 +1,21 @@
 package com.example.music.FileAccess;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import com.example.music.drawer_fragment.ListenNow;
+
 import java.io.File;
 import java.util.ArrayList;
 
 public class FetchSong {
+    public static FetchSong fetchSong;
+    public static FetchSong getInstance(){
+        if(fetchSong == null){
+            return new FetchSong();
+        }
+        return fetchSong;
+    }
     public ArrayList<File> scanSongs(File file){
         ArrayList<File> arrayList=new ArrayList<>();
 
@@ -17,6 +29,17 @@ public class FetchSong {
                 else{
                     if(myFile.getName().endsWith(".mp3")&& !myFile.getName().startsWith(".")){
                         arrayList.add(myFile);
+                        System.out.println("Calling");
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                ListenNow.tvPath.setText(myFile.getPath());
+                            }
+                        };
+
+                        handler.post(runnable);
+
                     }
                 }
             }
@@ -44,4 +67,5 @@ public class FetchSong {
         }
         return  playList;
     }
+
 }

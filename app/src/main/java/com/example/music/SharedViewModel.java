@@ -73,22 +73,28 @@ public class SharedViewModel extends ViewModel {
     public Integer getCurrentSongNumber(){
         return currentSongNumber.getValue();
     }
-    static class LoadPlayList extends AsyncTask<Void,Void,Void> {
+    static class LoadPlayList extends AsyncTask<Void,String,Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            FetchSong fetchSong = new FetchSong();
-            ArrayList<playListModel> myPlayList = fetchSong.scanValidPlaylist(Environment.getExternalStorageDirectory());
+            ArrayList<playListModel> myPlayList = FetchSong.getInstance().scanValidPlaylist(Environment.getExternalStorageDirectory());
             mutablePlayList.postValue(myPlayList);
             ArrayList<File> mySongList = new ArrayList<>();
             for(playListModel playLIst:myPlayList){
                 mySongList.addAll(playLIst.getSongList());
             }
+
             mutableAllSongList.postValue(mySongList);
             return null;
         }
         @Override
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            String path = values[0];
+
         }
     }
 
