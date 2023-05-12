@@ -73,7 +73,7 @@ public class SharedViewModel extends ViewModel {
     public Integer getCurrentSongNumber(){
         return currentSongNumber.getValue();
     }
-    static class LoadPlayList extends AsyncTask<Void,String,Void> {
+    static class LoadPlayList extends AsyncTask<Void,Void,Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             ArrayList<playListModel> myPlayList = FetchSong.getInstance().scanValidPlaylist(Environment.getExternalStorageDirectory());
@@ -89,13 +89,9 @@ public class SharedViewModel extends ViewModel {
         @Override
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            String path = values[0];
 
         }
+
     }
 
 }

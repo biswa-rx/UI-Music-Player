@@ -18,6 +18,7 @@ public class FetchSong {
     }
     public ArrayList<File> scanSongs(File file){
         ArrayList<File> arrayList=new ArrayList<>();
+        Handler handler = new Handler(Looper.getMainLooper());
 
         File [] songs = file.listFiles();
 
@@ -27,10 +28,9 @@ public class FetchSong {
                     arrayList.addAll(scanSongs(myFile));
                 }
                 else{
-                    if(myFile.getName().endsWith(".mp3")&& !myFile.getName().startsWith(".")){
+                    if(myFile.getName().endsWith(".mp3")&& !myFile.getName().startsWith(".") && myFile.length() >= 1024*128){
+                        //Ignore small file which size less than 128KB
                         arrayList.add(myFile);
-                        System.out.println("Calling");
-                        Handler handler = new Handler(Looper.getMainLooper());
                         Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
@@ -47,6 +47,8 @@ public class FetchSong {
         return arrayList;
     }
     public ArrayList<playListModel> scanValidPlaylist(File file){
+        Handler handler = new Handler(Looper.getMainLooper());
+        final int[] progress = {0};
         ArrayList<playListModel> playList =  new ArrayList<>();
 
         File [] myFile = file.listFiles();
@@ -63,6 +65,13 @@ public class FetchSong {
                     tempPlayList.setSongList(playFile);
                     playList.add(tempPlayList);
                 }
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        ListenNow.setProgress(myFile.length, progress[0]++);
+                    }
+                };
+                handler.post(runnable);
             }
         }
         return  playList;

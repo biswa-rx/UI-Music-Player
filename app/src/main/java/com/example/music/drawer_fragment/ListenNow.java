@@ -1,6 +1,7 @@
 package com.example.music.drawer_fragment;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
     private ArrayList<RecentActivityModels> list;
     private RecentActivityAdapter recentActivityAdapter;
     NavController navController;
+    static ProgressBar loadSongProgress;
     public static TextView tvPath;
     public ListenNow() {
     }
@@ -47,6 +50,8 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
         View view = inflater.inflate(R.layout.fragment_listen_now, container, false);
         recentRecyclerView = view.findViewById(R.id.recent_recycler_view);
         tvPath = view.findViewById(R.id.tv_path);
+        loadSongProgress = view.findViewById(R.id.search_progress_bar);
+        loadSongProgress.setProgress(4);
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
@@ -60,8 +65,6 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
 
         GridLayoutManager gridLayoutManager=new GridLayoutManager(context,3);
         recentRecyclerView.setLayoutManager(gridLayoutManager);
-//        LinearLayoutManager layoutManager=new LinearLayoutManager(container.getContext());
-//        recentRecyclerView.setLayoutManager(layoutManager);
 
         return view;
     }
@@ -89,6 +92,8 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
 //                list.remove(1);
                 list.add(1,new RecentActivityModels(R.drawable.icon,"All song",files.size()+""));
                 recentActivityAdapter.notifyDataSetChanged();
+                loadSongProgress.setVisibility(View.GONE);
+                tvPath.setText("Recently Played");
             }
         });
 
@@ -103,6 +108,12 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
         }else if(position==1){
             navController.navigate(R.id.action_listenNow_to_fragment_song_list);
             sharedViewModel.setMutableCurrentSongList(sharedViewModel.getAllSongList().getValue());
+        }
+    }
+    public static void setProgress(int max,int progress){
+        loadSongProgress.setMax(max);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            loadSongProgress.setProgress(progress,true);
         }
     }
 }
