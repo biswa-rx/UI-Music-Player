@@ -1,10 +1,8 @@
 package com.example.music;
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,18 +10,16 @@ import androidx.lifecycle.ViewModel;
 import com.example.music.FileAccess.FetchSong;
 import com.example.music.FileAccess.playListModel;
 
-import java.io.Closeable;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class SharedViewModel extends ViewModel {
     private static final String TAG = "SharedViewModel";
-    private static MutableLiveData<ArrayList<playListModel>> mutablePlayList =  new MutableLiveData<>();
-    private static MutableLiveData<ArrayList<File>> mutableAllSongList = new MutableLiveData<>();
-    private static MutableLiveData<ArrayList<File>> mutableCurrentSongList = new MutableLiveData<>();
-    private static MutableLiveData<File> mutableCurrentSong = new MutableLiveData<>();
-    private static MutableLiveData<Integer> currentSongNumber = new MutableLiveData<>();
+    private static final MutableLiveData<ArrayList<playListModel>> mutablePlayList =  new MutableLiveData<>();
+    private static final MutableLiveData<ArrayList<File>> mutableAllSongList = new MutableLiveData<>();
+    private static final MutableLiveData<ArrayList<File>> mutableCurrentSongList = new MutableLiveData<>();
+    private static final MutableLiveData<File> mutableCurrentSong = new MutableLiveData<>();
+    private static final MutableLiveData<Integer> currentSongNumber = new MutableLiveData<>();
 
     public LiveData<ArrayList<playListModel>> getSongPlaylist() {
         if (mutablePlayList.getValue() == null){
@@ -77,7 +73,7 @@ public class SharedViewModel extends ViewModel {
     public Integer getCurrentSongNumber(){
         return currentSongNumber.getValue();
     }
-    class LoadPlayList extends AsyncTask<Void,Void,Void> {
+    static class LoadPlayList extends AsyncTask<Void,Void,Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             FetchSong fetchSong = new FetchSong();

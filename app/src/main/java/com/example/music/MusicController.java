@@ -42,7 +42,9 @@ public class MusicController {
     public int getCurrentSongNumber(){
         return currentSongNumber;
     }
-
+    public File getCurrentSongPath(){
+        return songList.get(currentSongNumber);
+    }
     public void pauseMusic() {
         mediaPlayer.pause();
     }

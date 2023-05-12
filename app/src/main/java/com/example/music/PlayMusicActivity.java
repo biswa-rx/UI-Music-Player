@@ -1,10 +1,13 @@
 package com.example.music;
 
+import static com.example.music.MusicService.NOTIFICATION_ID;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.NotificationManager;
 import android.content.res.Resources;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
@@ -39,6 +42,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             public void onChanged(File file) {
                 btPlayPause.setChecked(false);
                 tvSongName.setText(file.getName().replace(".mp3",""));
+
 
                 byte[] image = getAlbumArt(file.getPath());
                 if(image != null){

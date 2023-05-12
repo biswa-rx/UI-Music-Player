@@ -3,6 +3,8 @@ package com.example.music;
 import android.content.Context;
 import android.net.Uri;
 
+import java.io.File;
+
 //For Singleton Class Create
 public class MediaPlayer {
     private static MediaPlayer instance;
@@ -10,6 +12,7 @@ public class MediaPlayer {
     private Uri uri;
     private boolean isPlaying;
     android.media.MediaPlayer mediaPlayer;
+    NotificationCallback notificationCallback;
 
     int musicDuration=0;
     private MediaPlayer() {
@@ -30,6 +33,9 @@ public class MediaPlayer {
          mediaPlayer = android.media.MediaPlayer.create(context, uri);
          musicDuration = mediaPlayer.getDuration();
          mediaPlayer.start();
+        if (notificationCallback != null) {
+            notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
+        }
          isPlaying = true;
     }
 
@@ -52,6 +58,9 @@ public class MediaPlayer {
             mediaPlayer.stop();
             mediaPlayer.release();
         }
+    }
+    public void setNotificationCallback(NotificationCallback callback) {
+        this.notificationCallback = callback;
     }
 
 }

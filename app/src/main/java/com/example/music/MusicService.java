@@ -7,9 +7,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -20,46 +23,45 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.bumptech.glide.Glide;
 
-public class MusicService extends Service {
+import java.io.File;
+
+
+public class MusicService extends Service implements NotificationCallback{
 //    private MediaPlayer mediaPlayer;
     MusicController musicController;
-    public static final int NOTIFICATION_ID = 101;
+    static MediaMetadataCompat mediaMetadata;
+    static MediaSessionCompat mediaSession;
+    static NotificationCompat.Builder builder;
+    public static final int NOTIFICATION_ID = 124;
     private boolean isPlaying;
+    private NotificationCallback notificationCallback;
     @Override
     public void onCreate() {
         super.onCreate();
         musicController = MusicController.getInstance();
-        // Set up the media session
-        MediaSessionCompat mediaSession = new MediaSessionCompat(getApplicationContext(), "tag");
-        mediaSession.setActive(true);
 
-// Set the media session metadata
-        MediaMetadataCompat mediaMetadata = new MediaMetadataCompat.Builder()
+        // Set up the media session
+        mediaSession = new MediaSessionCompat(getApplicationContext(), "tag");
+        mediaSession.setActive(true);
+        // Set the media session metadata
+        mediaMetadata = new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, "Song Title")
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "Artist Name")
                 .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,BitmapFactory.decodeResource(getResources(), R.drawable.icon))
                 .build();
         mediaSession.setMetadata(mediaMetadata);
 
-        RemoteViews customNotificationLayout = new RemoteViews(getPackageName(), R.layout.notifi_seekbar);
-
-// Find the ProgressBar view in the custom layout
-        // Set the progress of the ProgressBar using setProgressBar method
-        customNotificationLayout.setProgressBar(R.id.media_progressbar, 100, 35, false);
-
-
-
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+        builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Example Service")
                 .setContentText("Fuck")
                 .setSmallIcon(R.drawable.icon_playlist)
                 .setContentIntent(pendingIntent)
-                .setCustomContentView(customNotificationLayout)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
                 .addAction(R.drawable.notifi_previous,"Previous",null)
                 .addAction(R.drawable.notifi_play,"Play",null)
@@ -69,11 +71,14 @@ public class MusicService extends Service {
                         .setMediaSession(mediaSession.getSessionToken())
                         .setShowActionsInCompactView(0, 1, 2)) // Set which buttons to display in compact view
                 .setSubText("Sub text")
+                .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .build();
+                .setPriority(NotificationCompat.PRIORITY_LOW);
 
-        startForeground(NOTIFICATION_ID, notification);
+        startForeground(NOTIFICATION_ID, builder.build());
+
+        MediaPlayer.getInstance().setNotificationCallback(this);
+
     }
 
     @Override
@@ -135,5 +140,34 @@ public class MusicService extends Service {
             }
         }
         return false;
+    }
+
+    public void updateNotification(File file){
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(file.getPath());
+        // Extract the album artwork as a byte array
+        byte[] artworkBytes = retriever.getEmbeddedPicture();
+        retriever.release();
+        // Convert the byte array to a Bitmap
+        if(artworkBytes != null){
+            Bitmap artworkBitmap = BitmapFactory.decodeByteArray(artworkBytes, 0, artworkBytes.length);
+
+            mediaMetadata = new MediaMetadataCompat.Builder()
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, file.getName())
+                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "Artist")
+                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,artworkBitmap)
+                    .build();
+            mediaSession.setMetadata(mediaMetadata);
+            builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                    .setMediaSession(mediaSession.getSessionToken())
+                    .setShowActionsInCompactView(0, 1, 2)) ;// Set which buttons to display in compact view
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+        }
+    }
+
+    @Override
+    public void onNotificationTextUpdate(File file) {
+        updateNotification(file);
     }
 }
