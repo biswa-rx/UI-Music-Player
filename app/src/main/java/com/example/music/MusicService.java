@@ -117,7 +117,6 @@ public class MusicService extends Service implements NotificationCallback{
         musicController.pauseMusic();
     }
     private void nextMusic(){
-
     }
     private void previousMusic(){
 
@@ -156,6 +155,19 @@ public class MusicService extends Service implements NotificationCallback{
                     .putString(MediaMetadataCompat.METADATA_KEY_TITLE, file.getName())
                     .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "Artist")
                     .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,artworkBitmap)
+                    .build();
+            mediaSession.setMetadata(mediaMetadata);
+            builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                    .setMediaSession(mediaSession.getSessionToken())
+                    .setShowActionsInCompactView(0, 1, 2)) ;// Set which buttons to display in compact view
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+        } else {
+            mediaMetadata = new MediaMetadataCompat.Builder()
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, "Song Title")
+                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "Artist Name")
+                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,BitmapFactory.decodeResource(getResources(), R.drawable.white_draw))
+                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART,BitmapFactory.decodeResource(getResources(), R.drawable.icon))
                     .build();
             mediaSession.setMetadata(mediaMetadata);
             builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
