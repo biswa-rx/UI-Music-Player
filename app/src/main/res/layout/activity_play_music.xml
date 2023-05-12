@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/bs_main_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/layout_border"
+    android:id="@+id/bs_main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
@@ -33,12 +32,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"
-            android:singleLine="true"
+            android:layout_marginEnd="50dp"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
             android:text="Song Name"
             android:textColor="#FF00C8"
             android:textSize="20sp"
@@ -66,8 +65,8 @@
             android:id="@+id/bs_song_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
             android:padding="20dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/icon" />
     </androidx.cardview.widget.CardView>
 
@@ -97,8 +96,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/black"
             android:text="00:00"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="@+id/bs_player_seekBar"
             app:layout_constraintTop_toBottomOf="@+id/bs_player_seekBar" />
 
@@ -107,18 +106,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/black"
             android:text="00:00"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="@+id/bs_player_seekBar"
             app:layout_constraintTop_toBottomOf="@+id/bs_player_seekBar" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:gravity="center"
-            android:orientation="horizontal"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -77,7 +77,7 @@ public class SharedViewModel extends ViewModel {
         @Override
         protected Void doInBackground(Void... voids) {
             FetchSong fetchSong = new FetchSong();
-            ArrayList<playListModel> myPlayList=fetchSong.scanValidPlaylist(Environment.getExternalStorageDirectory());
+            ArrayList<playListModel> myPlayList = fetchSong.scanValidPlaylist(Environment.getExternalStorageDirectory());
             mutablePlayList.postValue(myPlayList);
             ArrayList<File> mySongList = new ArrayList<>();
             for(playListModel playLIst:myPlayList){

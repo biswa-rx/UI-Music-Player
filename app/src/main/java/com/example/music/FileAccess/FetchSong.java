@@ -30,6 +30,9 @@ public class FetchSong {
 
         if(myFile!=null) {
             for (File folder : myFile) {
+                if(folder.getName().equals("Android")){
+                    continue;
+                }
                 ArrayList<File> playFile = scanSongs(folder);
                 if (!playFile.isEmpty()) {
                     playListModel tempPlayList = new playListModel();

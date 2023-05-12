@@ -84,10 +84,6 @@ public class MusicService extends Service implements NotificationCallback {
 
     }
 
-//    private PendingIntent initIntent(String action) {
-//
-//    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -138,7 +134,6 @@ public class MusicService extends Service implements NotificationCallback {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
     private boolean checkNotification(int NOTIFICATION_ID) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         StatusBarNotification[] notifications = new StatusBarNotification[0];
