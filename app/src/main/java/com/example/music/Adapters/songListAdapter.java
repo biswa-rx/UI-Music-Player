@@ -1,12 +1,15 @@
 package com.example.music.Adapters;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,7 +47,7 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
         return new viewHolder(view);
     }
     @Override
-    public void onBindViewHolder(@NonNull viewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull viewHolder holder, @SuppressLint("RecyclerView") int position) {
         String text = songList.get(position).getSongName().replace("_"," ").replace(".mp3","");
         if(text.length()>32){
             String truncatedText = text.substring(0, 28) + " . . .";
@@ -53,13 +56,38 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
         }else{
             holder.songName.setText(text);
         }
-        byte[] image = getAlbumArt(songList.get(position).getPath());
-        if(image != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-//            Drawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-            holder.albumImage.setImageBitmap(bitmap);
-        }
-        holder.artistName.setText(songList.get(position).getSongArtist());
+        new Thread(new Runnable() {
+            final int temp = position;
+            Bitmap bitmap;
+            String artist;
+            Drawable drawable;
+            @Override
+            public void run() {
+                byte[] image = getAlbumArt(songList.get(temp).getPath());
+                artist = songList.get(temp).getSongArtist();
+                if(image != null) {
+                    bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            holder.albumImage.setImageBitmap(bitmap);
+                            holder.artistName.setText(artist);
+                        }
+                    });
+                }else{
+                     drawable = context.getResources().getDrawable(R.drawable.icon);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            holder.albumImage.setImageDrawable(drawable);
+                            holder.artistName.setText(artist);
+                        }
+                    });
+                }
+            }
+        }).start();
     }
     @Override
     public int getItemCount() {
