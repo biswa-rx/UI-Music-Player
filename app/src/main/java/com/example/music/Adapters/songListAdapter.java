@@ -55,6 +55,7 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
                     .centerCrop()
                     .into(holder.albumImage);
         }
+        holder.artistName.setText(songList.get(position).getSongArtist());
     }
     @Override
     public int getItemCount() {
@@ -63,13 +64,13 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
 
     public class viewHolder extends RecyclerView.ViewHolder {
         TextView songName;
-        TextView Duration;
+        TextView artistName;
         ImageView albumImage;
         public viewHolder(@NonNull View itemView) {
             super(itemView);
             songName = itemView.findViewById(R.id.song_name_tv);
             albumImage = itemView.findViewById(R.id.listAlbumImage);
-
+            artistName = itemView.findViewById(R.id.artist_name);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

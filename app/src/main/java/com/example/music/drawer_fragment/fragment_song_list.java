@@ -48,7 +48,7 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
             @Override
             public void onChanged(ArrayList<File> files) {
                 for (int i = 0; i < files.size(); i++) {
-                    songList.add(new songListModel(files.get(i).getName(), "10", files.get(i).getPath()));
+                    songList.add(new songListModel(files.get(i).getName(), files.get(i).getPath()));
                 }
                 listAdapter = new songListAdapter(songList, container.getContext(), fragment_song_list.this);
                 recyclerView.setAdapter(listAdapter);
@@ -57,7 +57,6 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
                 recyclerView.setLayoutManager(layoutManager);
             }
         });
-
         return view;
     }
 
