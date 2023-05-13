@@ -52,7 +52,6 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
                 }
                 listAdapter = new songListAdapter(songList, container.getContext(), fragment_song_list.this);
                 recyclerView.setAdapter(listAdapter);
-
                 LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
                 recyclerView.setLayoutManager(layoutManager);
             }
