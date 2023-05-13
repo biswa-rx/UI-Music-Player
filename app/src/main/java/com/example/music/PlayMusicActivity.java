@@ -1,6 +1,8 @@
 package com.example.music;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
@@ -23,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.palette.graphics.Palette;
 import androidx.transition.Transition;
 
 import com.bumptech.glide.Glide;
@@ -74,6 +77,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 );
                 byte[] image = getAlbumArt(file.getPath());
                 if (image != null) {
+                    setTextVibrantColor(tvSongName,image);
                     Glide.with(PlayMusicActivity.this)
                             .load(image)
                             .apply(new RequestOptions().transforms(new CropTransformation(150, 300, CropTransformation.CropType.TOP),
@@ -177,6 +181,18 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.no_animation, R.anim.slide_down);
+    }
+    private void setTextVibrantColor(TextView textView,byte[] imageData){
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                int dominantColor = palette.getDominantColor(getResources().getColor(R.color.pink));
+                // Invert the RGB values of the dominant color
+                int invertedColor = dominantColor ^ 0x00FFFFFF; // XOR with 0x00FFFFFF
+                textView.setTextColor(invertedColor);
+            }
+        });
     }
 
 //       bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
