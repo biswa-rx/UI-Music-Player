@@ -2,6 +2,7 @@ package com.example.music.Adapters;
 
 import android.content.Context;
 import android.media.MediaMetadataRetriever;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.music.Models.RecentActivityModels;
 import com.example.music.Models.songListModel;
 import com.example.music.R;
@@ -38,13 +40,21 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
     }
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        holder.songName.setText(songList.get(position).getSongName());
+        String text = songList.get(position).getSongName().replace("_"," ").replace(".mp3","");
+        if(text.length()>32){
+            String truncatedText = text.substring(0, 28) + " . . .";
+            holder.songName.setText(truncatedText);
+            holder.songName.setEllipsize(TextUtils.TruncateAt.END);
+        }else{
+            holder.songName.setText(text);
+        }
         byte[] image = getAlbumArt(songList.get(position).getPath());
-//        if(image != null){
-//            Glide.with(context).asBitmap()
-//                    .load(image)
-//                    .into(holder.albumImage);
-//        }
+        if(image != null){
+            Glide.with(context).asBitmap()
+                    .load(image)
+                    .centerCrop()
+                    .into(holder.albumImage);
+        }
     }
     @Override
     public int getItemCount() {

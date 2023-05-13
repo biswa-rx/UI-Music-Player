@@ -48,6 +48,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     ToggleButton btPlayPause;
     TextView tvSongName, tvSongEnd, tvSongLive, tvArtistName;
     SeekBar bs_seekBar;
+    ImageButton downArrowButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +131,12 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 }
             }
         });
-
+        downArrowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
 
@@ -148,6 +154,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         tvSongEnd = findViewById(R.id.song_end_tv);
         tvSongLive = findViewById(R.id.song_live_tv);
         tvArtistName = findViewById(R.id.bs_song_artist_name);
+        downArrowButton = findViewById(R.id.down_arrow_button);
 
         tvSongName.setSelected(true);
 
