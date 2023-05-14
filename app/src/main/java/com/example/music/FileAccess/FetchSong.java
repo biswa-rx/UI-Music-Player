@@ -2,7 +2,9 @@ package com.example.music.FileAccess;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 
+import com.example.music.R;
 import com.example.music.drawer_fragment.ListenNow;
 
 import java.io.File;
@@ -38,9 +40,7 @@ public class FetchSong {
                                 ListenNow.tvPath.setText(myFile.getPath());
                             }
                         };
-
                         handler.post(runnable);
-
                     }
                 }
             }
@@ -54,27 +54,38 @@ public class FetchSong {
         ArrayList<playListModel> playList = new ArrayList<>();
 
         File[] myFile = file.listFiles();
+        final int[] scanedFile = {0};
+        int totalFile = 0;
 
         if (myFile != null) {
+            totalFile = myFile.length;
             for (File folder : myFile) {
-                if (folder.getName().equals("Android")) {
-                    continue;
-                }
-                ArrayList<File> playFile = scanSongs(folder);
-                if (!playFile.isEmpty()) {
-                    playListModel tempPlayList = new playListModel();
-                    tempPlayList.setPlayListName(folder.getName());
-                    tempPlayList.setSongList(playFile);
-                    playList.add(tempPlayList);
-                }
-                Runnable runnable = new Runnable() {
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        ListenNow.setProgress(myFile.length, progress[0]++);
+                        if(!folder.getName().equals("Android")) {
+                            ArrayList<File> playFile = scanSongs(folder);
+                            if (!playFile.isEmpty()) {
+                                playListModel tempPlayList = new playListModel();
+                                tempPlayList.setPlayListName(folder.getName());
+                                tempPlayList.setSongList(playFile);
+                                playList.add(tempPlayList);
+                            }
+                            Runnable runnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    ListenNow.setProgress(myFile.length, progress[0]++);
+                                }
+                            };
+                            handler.post(runnable);
+                        }
+                        scanedFile[0]++;
                     }
-                };
-                handler.post(runnable);
+                }).start();
             }
+        }
+        while(totalFile!=scanedFile[0]){
+            SystemClock.sleep(2);
         }
         return playList;
     }
