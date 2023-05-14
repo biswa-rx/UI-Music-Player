@@ -100,7 +100,7 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
 
     @Override
     public void onItemClick(int position) {
-        if(position>2) {
+        if(position>=2) {
             navController.navigate(R.id.action_listenNow_to_fragment_song_list);
             sharedViewModel.setMutableCurrentSongListFromFolder(position - 2);
         }else if(position==1){

@@ -141,6 +141,7 @@ public class MusicService extends Service implements NotificationCallback {
     }
 
     public void updateNotification(File file) {
+        /*MediaMetadataRetriever class doing high CPU intensive tack so all work done in background to avoid stuck in UI*/
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(file.getPath());
         String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
@@ -184,7 +185,12 @@ public class MusicService extends Service implements NotificationCallback {
 
     @Override
     public void onNotificationTextUpdate(File file) {
-        updateNotification(file);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                updateNotification(file);//problem
+            }
+        }).start();
     }
 
     private PendingIntent initIntent(String action){
