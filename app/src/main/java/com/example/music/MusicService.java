@@ -2,7 +2,6 @@ package com.example.music;
 
 import static com.example.music.App.CHANNEL_ID;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -12,18 +11,12 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.widget.ProgressBar;
-import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
-import com.bumptech.glide.Glide;
 
 import java.io.File;
 
@@ -72,7 +65,7 @@ public class MusicService extends Service implements NotificationCallback {
                 .addAction(R.drawable.notifi_next, "Next", nextPendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession.getSessionToken())
-                        .setShowActionsInCompactView(0, 1, 2)) // Set which buttons to display in compact view
+                        .setShowActionsInCompactView(0, 1, 3)) // Set which buttons to display in compact view
                 .setSubText("Sub text")
                 .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
@@ -91,7 +84,7 @@ public class MusicService extends Service implements NotificationCallback {
 
             if (action.equals("PLAY")) {
                 Uri musicUri = intent.getParcelableExtra("URI");
-                if (checkNotification(NOTIFICATION_ID)) {
+                if (checkNotification()) {
                     //recreate notification
                 }
                 playMusic(musicUri);
@@ -133,14 +126,14 @@ public class MusicService extends Service implements NotificationCallback {
     public IBinder onBind(Intent intent) {
         return null;
     }
-    private boolean checkNotification(int NOTIFICATION_ID) {
+    private boolean checkNotification() {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         StatusBarNotification[] notifications = new StatusBarNotification[0];
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             notifications = mNotificationManager.getActiveNotifications();
         }
         for (StatusBarNotification notification : notifications) {
-            if (notification.getId() == NOTIFICATION_ID) {
+            if (notification.getId() == MusicService.NOTIFICATION_ID) {
                 return true;
             }
         }
@@ -163,24 +156,28 @@ public class MusicService extends Service implements NotificationCallback {
                     .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
                     .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, artworkBitmap)
                     .build();
-            mediaSession.setMetadata(mediaMetadata);
-            builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSession.getSessionToken())
-                    .setShowActionsInCompactView(0, 1, 2));// Set which buttons to display in compact view
-            notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
         } else {
             mediaMetadata = new MediaMetadataCompat.Builder()
                     .putString(MediaMetadataCompat.METADATA_KEY_TITLE, file.getName())
                     .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
-                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.noti_icon))
+                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.music_theme_bg))
                     .build();
-            mediaSession.setMetadata(mediaMetadata);
-            builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSession.getSessionToken())
-                    .setShowActionsInCompactView(0, 1, 2));// Set which buttons to display in compact view
-            notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        }
+        mediaSession.setMetadata(mediaMetadata);
+        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                .setMediaSession(mediaSession.getSessionToken())
+                .setShowActionsInCompactView(0, 1 , 2))
+                .clearActions()
+                .addAction(R.drawable.notifi_previous, "Previous", previousPendingIntent)
+                .addAction(MediaPlayer.getInstance().isPause()?R.drawable.notifi_play:R.drawable.notifi_pause, "Play/Pause", playPendingIntent)
+                .addAction(R.drawable.notifi_next, "Next", nextPendingIntent);
+
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if(MediaPlayer.getInstance().isPause()){
             notificationManager.notify(NOTIFICATION_ID, builder.build());
+            stopForeground(false);
+        }else{
+            startForeground(NOTIFICATION_ID,builder.build());
         }
     }
 

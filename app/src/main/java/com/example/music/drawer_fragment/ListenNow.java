@@ -58,7 +58,6 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
         list = new ArrayList<>();
         list.add(new RecentActivityModels(R.drawable.icon_shuffle,"Shuffle all",""));
 //        list.add(new RecentActivityModels(R.drawable.icon,"All song",""));
-        list.add(new RecentActivityModels(R.drawable.icon_cloud_network,"Recent song","No"));
 
         recentActivityAdapter = new RecentActivityAdapter(list,context,this);
         recentRecyclerView.setAdapter(recentActivityAdapter);
@@ -101,10 +100,9 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
 
     @Override
     public void onItemClick(int position) {
-//        Toast.makeText(getContext(),position+"hgfd",Toast.LENGTH_SHORT).show();
         if(position>2) {
             navController.navigate(R.id.action_listenNow_to_fragment_song_list);
-            sharedViewModel.setMutableCurrentSongListFromFolder(position - 3);
+            sharedViewModel.setMutableCurrentSongListFromFolder(position - 2);
         }else if(position==1){
             navController.navigate(R.id.action_listenNow_to_fragment_song_list);
             sharedViewModel.setMutableCurrentSongList(sharedViewModel.getAllSongList().getValue());

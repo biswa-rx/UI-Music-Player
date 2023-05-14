@@ -34,6 +34,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.ColorFilterTransformation;
@@ -63,61 +64,15 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             Uri fileUri = intent.getData();
             MusicController.getInstance().playMusic(this, fileUri);
             btPlayPause.setChecked(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                playMusicThemeGenerator(Paths.get(fileUri.getPath()).toFile());
+            }
         }
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         sharedViewModel.getCurrentSong().observe(this, new Observer<File>() {
             @Override
             public void onChanged(File file) {
-                btPlayPause.setChecked(false);
-                tvSongName.setText(file.getName().replace(".mp3", "").replace("_", " "));
-                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                retriever.setDataSource(file.getPath());
-                tvArtistName.setText(
-                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) == null
-                                ? "Unknown artist" : retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-                );
-                byte[] image = getAlbumArt(file.getPath());
-                if (image != null) {
-                    setTextVibrantColor(tvSongName,image);
-                    Glide.with(PlayMusicActivity.this)
-                            .load(image)
-                            .apply(new RequestOptions().transforms(new CropTransformation(150, 300, CropTransformation.CropType.TOP),
-                                    new BlurTransformation(10, 1),
-                                    new ColorFilterTransformation(Color.argb(100, 0, 0, 0))
-                            ))
-                            .into(new SimpleTarget<Drawable>() {
-                                @Override
-                                public void onResourceReady(@NonNull Drawable resource,
-                                                            @Nullable com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
-                                    bs_main.setBackgroundDrawable(resource);
-                                }
-
-                                @Override
-                                public void onLoadCleared(@Nullable Drawable placeholder) {
-                                    bs_main.setBackground(null);
-                                }
-                            });
-                    Glide.with(getBaseContext()).asBitmap()
-                            .load(image)
-                            .into(songImageView);
-                } else {
-                    Glide.with(getBaseContext()).asBitmap()
-                            .load(R.drawable.music_theme_bg)
-                            .into(songImageView);
-                    Glide.with(PlayMusicActivity.this)
-                            .load(R.drawable.layout_bg)
-                            .apply(new RequestOptions().transforms(new CropTransformation(150, 300, CropTransformation.CropType.TOP),
-                                    new BlurTransformation(3, 1),
-                                    new ColorFilterTransformation(Color.argb(20, 0, 0, 0))
-                            ))
-                            .into(new SimpleTarget<Drawable>() {
-                                @Override
-                                public void onResourceReady(@NonNull Drawable resource,
-                                                            @Nullable com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
-                                    bs_main.setBackgroundDrawable(resource);
-                                }
-                            });
-                }
+                playMusicThemeGenerator(file);
             }
         });
 
@@ -189,7 +144,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         super.onBackPressed();
         overridePendingTransition(R.anim.no_animation, R.anim.slide_down);
     }
-    private void setTextVibrantColor(TextView textView,byte[] imageData){
+
+    private void setTextVibrantColor(TextView textView, byte[] imageData) {
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
@@ -200,6 +156,61 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 textView.setTextColor(invertedColor);
             }
         });
+    }
+
+    private void playMusicThemeGenerator(File file) {
+        if (file != null) {
+            btPlayPause.setChecked(false);
+            tvSongName.setText(file.getName().replace(".mp3", "").replace("_", " "));
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(file.getPath());
+            tvArtistName.setText(
+                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) == null
+                            ? "Unknown artist" : retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+            );
+            byte[] image = getAlbumArt(file.getPath());
+            if (image != null) {
+                setTextVibrantColor(tvSongName, image);
+                Glide.with(PlayMusicActivity.this)
+                        .load(image)
+                        .apply(new RequestOptions().transforms(new CropTransformation(150, 300, CropTransformation.CropType.TOP),
+                                new BlurTransformation(10, 1),
+                                new ColorFilterTransformation(Color.argb(100, 0, 0, 0))
+                        ))
+                        .into(new SimpleTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource,
+                                                        @Nullable com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
+                                bs_main.setBackgroundDrawable(resource);
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                                bs_main.setBackground(null);
+                            }
+                        });
+                Glide.with(getBaseContext()).asBitmap()
+                        .load(image)
+                        .into(songImageView);
+            } else {
+                Glide.with(getBaseContext()).asBitmap()
+                        .load(R.drawable.music_theme_bg)
+                        .into(songImageView);
+                Glide.with(PlayMusicActivity.this)
+                        .load(R.drawable.layout_bg)
+                        .apply(new RequestOptions().transforms(new CropTransformation(150, 300, CropTransformation.CropType.TOP),
+                                new BlurTransformation(3, 1),
+                                new ColorFilterTransformation(Color.argb(20, 0, 0, 0))
+                        ))
+                        .into(new SimpleTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource,
+                                                        @Nullable com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
+                                bs_main.setBackgroundDrawable(resource);
+                            }
+                        });
+            }
+        }
     }
 
 //       bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

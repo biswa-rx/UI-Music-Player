@@ -18,7 +18,6 @@ public class MediaPlayer {
     private MediaPlayer() {
         // Private constructor to prevent instantiation
     }
-
     public static synchronized MediaPlayer getInstance() {
         if (instance == null) {
             instance = new MediaPlayer();
@@ -43,12 +42,18 @@ public class MediaPlayer {
         mediaPlayer.start();
         isPlaying = true;
         isPause = false;
+        if (notificationCallback != null) {
+            notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
+        }
     }
 
     public void pause() {
         // Implement pause logic here
         mediaPlayer.pause();
         isPause = true;
+        if (notificationCallback != null) {
+            notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
+        }
     }
     public boolean isPause(){
         return isPause;
