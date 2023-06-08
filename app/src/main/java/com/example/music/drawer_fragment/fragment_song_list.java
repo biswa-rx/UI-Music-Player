@@ -8,17 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.music.Adapters.songListAdapter;
 import com.example.music.Models.songListModel;
-import com.example.music.MusicController;
-import com.example.music.MusicService;
+import com.example.music.Media.MusicController;
+import com.example.music.Notification.MusicService;
 import com.example.music.R;
-import com.example.music.SharedViewModel;
+import com.example.music.ViewModel.SharedViewModel;
 
 import java.io.File;
 import java.util.ArrayList;

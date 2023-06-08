@@ -1,8 +1,11 @@
-package com.example.music;
+package com.example.music.Media;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.SystemClock;
+
+import com.example.music.CallbackMethod.NotificationCallback;
+import com.example.music.CallbackMethod.SeekbarUpdateCallback;
 
 import java.io.File;
 

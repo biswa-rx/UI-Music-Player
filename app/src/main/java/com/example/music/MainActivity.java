@@ -26,6 +26,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
+import com.example.music.Media.MusicController;
+import com.example.music.ViewModel.SharedViewModel;
 import com.example.music.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 

@@ -1,4 +1,4 @@
-package com.example.music;
+package com.example.music.Notification;
 
 import static com.example.music.App.CHANNEL_ID;
 
@@ -17,6 +17,12 @@ import android.support.v4.media.session.MediaSessionCompat;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import com.example.music.CallbackMethod.NotificationCallback;
+import com.example.music.MainActivity;
+import com.example.music.Media.MediaPlayer;
+import com.example.music.Media.MusicController;
+import com.example.music.R;
 
 import java.io.File;
 
@@ -194,7 +200,7 @@ public class MusicService extends Service implements NotificationCallback {
     }
 
     private PendingIntent initIntent(String action){
-        Intent playIntent = new Intent(this,NotificationActionReceiver.class);
+        Intent playIntent = new Intent(this, NotificationActionReceiver.class);
         playIntent.setAction(action);
         return PendingIntent.getBroadcast(getApplicationContext(), 0, playIntent, PendingIntent.FLAG_IMMUTABLE);
     }

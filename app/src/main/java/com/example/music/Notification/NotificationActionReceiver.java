@@ -1,8 +1,10 @@
-package com.example.music;
+package com.example.music.Notification;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import com.example.music.Media.MusicController;
 
 public class NotificationActionReceiver extends BroadcastReceiver {
 

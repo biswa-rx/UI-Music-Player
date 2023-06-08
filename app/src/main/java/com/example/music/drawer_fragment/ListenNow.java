@@ -22,11 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.music.Adapters.RecentActivityAdapter;
-import com.example.music.FileAccess.FetchSong;
 import com.example.music.FileAccess.playListModel;
 import com.example.music.Models.RecentActivityModels;
 import com.example.music.R;
-import com.example.music.SharedViewModel;
+import com.example.music.ViewModel.SharedViewModel;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -50,10 +50,10 @@
             android:theme="@style/Theme.Music.NoActionBar">
         </activity>
         <service
-            android:name=".MusicService"
+            android:name=".Notification.MusicService"
             android:foregroundServiceType="mediaProjection|location|connectedDevice" />
         <receiver
-            android:name=".NotificationActionReceiver"
+            android:name=".Notification.NotificationActionReceiver"
             android:exported="false" >
             <intent-filter>
                 <action android:name="ACTION_PLAY" />
