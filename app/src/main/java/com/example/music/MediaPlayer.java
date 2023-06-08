@@ -37,6 +37,12 @@ public class MediaPlayer {
         }
          isPlaying = true;
         isPause = false;
+        mediaPlayer.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(android.media.MediaPlayer mediaPlayer) {
+
+            }
+        });
     }
     public void start(){
         mediaPlayer.start();
@@ -46,7 +52,6 @@ public class MediaPlayer {
             notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
         }
     }
-
     public void pause() {
         // Implement pause logic here
         mediaPlayer.pause();
@@ -77,5 +82,4 @@ public class MediaPlayer {
     public void setNotificationCallback(NotificationCallback callback) {
         this.notificationCallback = callback;
     }
-
 }

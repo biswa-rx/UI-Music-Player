@@ -1,9 +1,13 @@
 package com.example.music;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -33,6 +37,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.file.Paths;
 
@@ -154,8 +159,18 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 // Invert the RGB values of the dominant color
                 int invertedColor = dominantColor ^ 0x00FFFFFF; // XOR with 0x00FFFFFF
                 textView.setTextColor(invertedColor);
+                updateButtonColor(invertedColor);
             }
         });
+    }
+
+    private void updateButtonColor(int invertedColor) {
+        ColorStateList colorStateList = ColorStateList.valueOf(invertedColor);
+        btPlayPause.setBackgroundTintList(colorStateList);
+        btNext.setBackgroundTintList(colorStateList);
+        btPrevious.setBackgroundTintList(colorStateList);
+        btRepeat.setBackgroundTintList(colorStateList);
+        btSuffle.setBackgroundTintList(colorStateList);
     }
 
     private void playMusicThemeGenerator(File file) {
@@ -193,6 +208,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                         .load(image)
                         .into(songImageView);
             } else {
+                Drawable drawable = getResources().getDrawable(R.drawable.music_theme_bg);
+                byte[] imageBytes = drawableToBytes(drawable);
+                setTextVibrantColor(tvSongName,imageBytes);
                 Glide.with(getBaseContext()).asBitmap()
                         .load(R.drawable.music_theme_bg)
                         .into(songImageView);
@@ -212,7 +230,28 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             }
         }
     }
+    // Method to convert Drawable to Bitmap
+    public Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
 
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+    // Method to convert Drawable to byte array
+    public byte[] drawableToBytes(Drawable drawable) {
+        Bitmap bitmap = drawableToBitmap(drawable);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
 //       bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 //        @Override
 //        public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
