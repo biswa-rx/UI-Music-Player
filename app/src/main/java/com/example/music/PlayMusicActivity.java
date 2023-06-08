@@ -36,16 +36,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.example.music.Utils.TimeConverter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.file.Paths;
+import java.sql.Time;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.ColorFilterTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 
-public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener,SeekbarUpdateCallback {
+public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener, SeekbarUpdateCallback {
     private SharedViewModel sharedViewModel;
     ConstraintLayout bs_main;
     ImageView songImageView, bs_down_arrow;
@@ -98,6 +100,26 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             }
         });
         MediaPlayer.getInstance().setSeekbarUpdateCallback(this);
+        bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser) {
+                    String currentTime = TimeConverter.millisecondToString(progress);
+                    tvSongLive.setText(currentTime);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                MediaPlayer.seekUpdate = false;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                MusicController.getInstance().musicSeekTo(seekBar.getProgress());
+                MediaPlayer.seekUpdate = true;
+            }
+        });
     }
 
 
@@ -209,9 +231,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                         .load(image)
                         .into(songImageView);
             } else {
-                Drawable drawable = getResources().getDrawable(R.drawable.music_theme_bg);
-                byte[] imageBytes = drawableToBytes(drawable);
-                setTextVibrantColor(tvSongName,imageBytes);
                 Glide.with(getBaseContext()).asBitmap()
                         .load(R.drawable.music_theme_bg)
                         .into(songImageView);
@@ -231,6 +250,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             }
         }
     }
+
     // Method to convert Drawable to Bitmap
     public Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {
@@ -246,6 +266,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
         return bitmap;
     }
+
     // Method to convert Drawable to byte array
     public byte[] drawableToBytes(Drawable drawable) {
         Bitmap bitmap = drawableToBitmap(drawable);
@@ -256,13 +277,16 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onSeekbarUpdate(int mediaProgress, int mediaMaxProgress) {
-        System.out.println(mediaProgress+"--------------"+mediaMaxProgress);
+        System.out.println("MEDIA PROGRESS " + mediaProgress + " --- MAX PROGRESS " + mediaMaxProgress);
+        bs_seekBar.setMax(mediaMaxProgress);
+        bs_seekBar.setProgress(mediaProgress);
+        tvSongEnd.setText(TimeConverter.millisecondToString(mediaMaxProgress));
+        tvSongLive.setText(TimeConverter.millisecondToString(mediaProgress));
     }
 //       bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 //        @Override
 //        public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-//            String currentTime = createTime(progress);
-//            tvSongLive.setText(currentTime);
+
 //        }
 //        @Override
 //        public void onStartTrackingTouch(SeekBar seekBar) {

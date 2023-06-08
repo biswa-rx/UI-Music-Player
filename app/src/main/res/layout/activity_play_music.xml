@@ -139,7 +139,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@color/play_button_color"
                 android:background="@drawable/icon_repeat_off" />
 
             <ImageButton
@@ -147,6 +147,7 @@
                 android:layout_width="40dp"
                 android:layout_height="35dp"
                 android:layout_marginHorizontal="10dp"
+                android:backgroundTint="@color/play_button_color"
                 android:background="@drawable/icon_previous" />
 
             <ToggleButton
@@ -155,7 +156,7 @@
                 android:layout_height="60dp"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/play_button_pressed"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@color/play_button_color"
                 android:textOff=""
                 android:textOn="" />
 
@@ -164,6 +165,7 @@
                 android:layout_width="40dp"
                 android:layout_height="35dp"
                 android:layout_marginHorizontal="10dp"
+                android:backgroundTint="@color/play_button_color"
                 android:background="@drawable/icon_next" />
 
             <ImageButton
@@ -171,7 +173,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@color/play_button_color"
                 android:background="@drawable/icon_queue_music" />
         </LinearLayout>
 

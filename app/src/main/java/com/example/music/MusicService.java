@@ -65,7 +65,7 @@ public class MusicService extends Service implements NotificationCallback {
                 .addAction(R.drawable.notifi_next, "Next", nextPendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession.getSessionToken())
-                        .setShowActionsInCompactView(0, 1, 3)) // Set which buttons to display in compact view
+                        .setShowActionsInCompactView(0, 1, 2)) // Set which buttons to display in compact view
                 .setSubText("Sub text")
                 .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_TRANSPORT)

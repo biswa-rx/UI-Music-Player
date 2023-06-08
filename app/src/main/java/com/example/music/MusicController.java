@@ -57,6 +57,9 @@ public class MusicController {
     public void justPlay(){
         mediaPlayer.start();
     }
+    public void musicSeekTo(int duration){
+        mediaPlayer.musicSeekTo(duration);
+    }
 
     // Additional music control methods
     public void nextMusic(){

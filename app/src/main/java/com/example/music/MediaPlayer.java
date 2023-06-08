@@ -11,17 +11,34 @@ public class MediaPlayer {
     private static MediaPlayer instance;
     private Context context;
     private Uri uri;
-    private boolean isPlaying;
-    private boolean isPause;
+    private volatile boolean isPlaying;
+    private volatile boolean isPause;
     android.media.MediaPlayer mediaPlayer;
     NotificationCallback notificationCallback;
     SeekbarUpdateCallback seekbarUpdateCallback;
     int musicDuration = 0;
-    boolean seekUpdate = false;
-    Thread progressUpdate;
+    public static volatile boolean seekUpdate = true;
 
     private MediaPlayer() {
         // Private constructor to prevent instantiation
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(true) {
+                        if (seekUpdate) {
+                            if (seekbarUpdateCallback != null && isPlaying) {
+                                try {
+                                    seekbarUpdateCallback.onSeekbarUpdate(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
+                                }catch (Exception e){
+                                    System.out.println(e.toString() + " Exception in seekbar update...");
+                                }
+                            }
+                            SystemClock.sleep(500);
+//                            System.out.println("Running");
+                        }
+                    }
+                }
+            }).start();
     }
 
     public static synchronized MediaPlayer getInstance() {
@@ -32,10 +49,7 @@ public class MediaPlayer {
     }
 
     public void play(Context context, Uri uri) {
-        seekUpdate = false;
-        if(progressUpdate != null) {
-            progressUpdate.stop();
-        }
+        isPlaying = false;
         this.context = context;
         this.uri = uri;
         // Implement play logic here using the provided context and Uri
@@ -48,19 +62,6 @@ public class MediaPlayer {
         isPlaying = true;
         isPause = false;
 
-        progressUpdate = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (seekUpdate) {
-                    if (seekbarUpdateCallback != null) {
-//                        seekbarUpdateCallback.onSeekbarUpdate(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
-                    }
-                    SystemClock.sleep(500);
-                }
-            }
-        });
-        progressUpdate.start();
-        seekUpdate = true;
     }
 
 
@@ -94,6 +95,12 @@ public class MediaPlayer {
     public int getMusicDuration() {
         return musicDuration;
     }
+    public int getCurrentPosition(){
+        if(isPlaying){
+            return mediaPlayer.getCurrentPosition();
+        }
+        return 0;
+    }
 
     public void clear() {
         if (mediaPlayer != null) {
@@ -109,5 +116,9 @@ public class MediaPlayer {
 
     public void setSeekbarUpdateCallback(SeekbarUpdateCallback seekbarUpdateCallback) {
         this.seekbarUpdateCallback = seekbarUpdateCallback;
+    }
+
+    public void musicSeekTo(int duration) {
+        mediaPlayer.seekTo(duration);
     }
 }
