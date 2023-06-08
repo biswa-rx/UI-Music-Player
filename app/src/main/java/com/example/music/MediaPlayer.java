@@ -2,6 +2,7 @@ package com.example.music;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.SystemClock;
 
 import java.io.File;
 
@@ -14,10 +15,15 @@ public class MediaPlayer {
     private boolean isPause;
     android.media.MediaPlayer mediaPlayer;
     NotificationCallback notificationCallback;
-    int musicDuration=0;
+    SeekbarUpdateCallback seekbarUpdateCallback;
+    int musicDuration = 0;
+    boolean seekUpdate = false;
+    Thread progressUpdate;
+
     private MediaPlayer() {
         // Private constructor to prevent instantiation
     }
+
     public static synchronized MediaPlayer getInstance() {
         if (instance == null) {
             instance = new MediaPlayer();
@@ -26,25 +32,39 @@ public class MediaPlayer {
     }
 
     public void play(Context context, Uri uri) {
+        seekUpdate = false;
+        if(progressUpdate != null) {
+            progressUpdate.stop();
+        }
         this.context = context;
         this.uri = uri;
         // Implement play logic here using the provided context and Uri
-         mediaPlayer = android.media.MediaPlayer.create(context, uri);
-         musicDuration = mediaPlayer.getDuration();
-         mediaPlayer.start();
+        mediaPlayer = android.media.MediaPlayer.create(context, uri);
+        musicDuration = mediaPlayer.getDuration();
+        mediaPlayer.start();
         if (notificationCallback != null) {
             notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
         }
-         isPlaying = true;
+        isPlaying = true;
         isPause = false;
-        mediaPlayer.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(android.media.MediaPlayer mediaPlayer) {
 
+        progressUpdate = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (seekUpdate) {
+                    if (seekbarUpdateCallback != null) {
+//                        seekbarUpdateCallback.onSeekbarUpdate(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
+                    }
+                    SystemClock.sleep(500);
+                }
             }
         });
+        progressUpdate.start();
+        seekUpdate = true;
     }
-    public void start(){
+
+
+    public void start() {
         mediaPlayer.start();
         isPlaying = true;
         isPause = false;
@@ -52,6 +72,7 @@ public class MediaPlayer {
             notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
         }
     }
+
     public void pause() {
         // Implement pause logic here
         mediaPlayer.pause();
@@ -60,7 +81,8 @@ public class MediaPlayer {
             notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
         }
     }
-    public boolean isPause(){
+
+    public boolean isPause() {
         return isPause;
     }
 
@@ -72,14 +94,20 @@ public class MediaPlayer {
     public int getMusicDuration() {
         return musicDuration;
     }
-    public void clear(){
-        if(mediaPlayer != null){
+
+    public void clear() {
+        if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
         }
         isPlaying = false;
     }
+
     public void setNotificationCallback(NotificationCallback callback) {
         this.notificationCallback = callback;
+    }
+
+    public void setSeekbarUpdateCallback(SeekbarUpdateCallback seekbarUpdateCallback) {
+        this.seekbarUpdateCallback = seekbarUpdateCallback;
     }
 }

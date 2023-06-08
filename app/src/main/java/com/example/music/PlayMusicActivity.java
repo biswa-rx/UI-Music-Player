@@ -45,7 +45,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.ColorFilterTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 
-public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener,SeekbarUpdateCallback {
     private SharedViewModel sharedViewModel;
     ConstraintLayout bs_main;
     ImageView songImageView, bs_down_arrow;
@@ -97,6 +97,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 onBackPressed();
             }
         });
+        MediaPlayer.getInstance().setSeekbarUpdateCallback(this);
     }
 
 
@@ -251,6 +252,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
+    }
+
+    @Override
+    public void onSeekbarUpdate(int mediaProgress, int mediaMaxProgress) {
+        System.out.println(mediaProgress+"--------------"+mediaMaxProgress);
     }
 //       bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 //        @Override
