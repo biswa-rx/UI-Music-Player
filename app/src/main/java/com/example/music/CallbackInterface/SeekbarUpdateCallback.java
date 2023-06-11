@@ -1,4 +1,4 @@
-package com.example.music.CallbackMethod;
+package com.example.music.CallbackInterface;
 
 public interface SeekbarUpdateCallback {
     void onSeekbarUpdate(int mediaProgress, int mediaMaxProgress);

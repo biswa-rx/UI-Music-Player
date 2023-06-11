@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,7 +30,7 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.example.music.CallbackMethod.SeekbarUpdateCallback;
+import com.example.music.CallbackInterface.SeekbarUpdateCallback;
 import com.example.music.Media.MediaPlayer;
 import com.example.music.Media.MusicController;
 import com.example.music.Utils.TimeConverter;
@@ -68,9 +67,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             Uri fileUri = intent.getData();
             MusicController.getInstance().playMusic(this, fileUri);
             btPlayPause.setChecked(false);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                playMusicThemeGenerator(Paths.get(fileUri.getPath()).toFile());
-            }
         }
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         sharedViewModel.getCurrentSong().observe(this, new Observer<File>() {
@@ -128,7 +124,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         btRepeat = findViewById(R.id.repeat_button);
         songImageView = findViewById(R.id.bs_song_image);
         tvSongName = findViewById(R.id.bs_song_name_tv);
-//        bs_down_arrow = findViewById(R.id.down_arrow_button);
         bs_main = findViewById(R.id.bs_main_layout);
         bs_seekBar = findViewById(R.id.bs_player_seekBar);
         tvSongEnd = findViewById(R.id.song_end_tv);
@@ -142,7 +137,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         btPrevious.setOnClickListener(this);
         btSuffle.setOnClickListener(this);
         btRepeat.setOnClickListener(this);
-//        bs_down_arrow.setOnClickListener(this);
 
         if (MediaPlayer.getInstance().isPause()) {
             btPlayPause.setChecked(true);
@@ -280,22 +274,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         tvSongEnd.setText(TimeConverter.millisecondToString(mediaMaxProgress));
         tvSongLive.setText(TimeConverter.millisecondToString(mediaProgress));
     }
-//       bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//        @Override
-//        public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
 
-//        }
-//        @Override
-//        public void onStartTrackingTouch(SeekBar seekBar) {
-//            updateSeekFlag = true;
-//        }
-//        @Override
-//        public void onStopTrackingTouch(SeekBar seekBar) {
-//            mediaPlayer.seekTo(seekBar.getProgress());
-//            updateSeekFlag = false;
-//
-//        }
-//    });
 //
 //    update_seek = new Thread(){
 //        @Override

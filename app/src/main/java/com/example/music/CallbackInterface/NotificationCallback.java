@@ -1,4 +1,4 @@
-package com.example.music.CallbackMethod;
+package com.example.music.CallbackInterface;
 
 import java.io.File;
 

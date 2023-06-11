@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -33,7 +34,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private AppBarConfiguration mAppBarConfiguration;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.listenNow, R.id.myLibrary, R.id.playlists,R.id.action_settings,R.id.action_help,R.id.action_feed_back)
+                R.id.listenNow, R.id.myLibrary, R.id.playlists, R.id.action_settings, R.id.action_help, R.id.action_feed_back)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -72,16 +73,33 @@ public class MainActivity extends AppCompatActivity{
 
         smallPlayerAlbum = findViewById(R.id.music_image);
         mainUiPlayBT = findViewById(R.id.play_button_main_ui);
+        mainUiPlayBT.setChecked(true);
 
 
         bottom_sheet_player = findViewById(R.id.botton_sheet_view_triger);
         bottom_sheet_player.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(musicController.isMusicPlaying()){
-                    startActivity(new Intent(MainActivity.this,PlayMusicActivity.class));
-                }else{
-                    Toast.makeText(MainActivity.this,"Currently no song playing", Toast.LENGTH_SHORT).show();
+                if (musicController.isMusicPlaying()) {
+                    startActivity(new Intent(MainActivity.this, PlayMusicActivity.class));
+                } else {
+                    Toast.makeText(MainActivity.this, "Currently no song playing", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        mainUiPlayBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mainUiPlayBT.isChecked()) {
+                    if (MusicController.getInstance().isMusicPlaying()) {
+                        MusicController.getInstance().pauseMusic();
+                    }
+                } else {
+                    if (sharedViewModel.getCurrentSong().getValue() == null) {
+                        System.out.println("Nothing to  play... Here I have to implement shared preference for previous playlist detect and play");
+                    } else {
+                            MusicController.getInstance().justPlay();
+                    }
                 }
             }
         });
@@ -92,14 +110,14 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onChanged(File file) {
                 mainUiPlayBT.setChecked(false);
-                tvMainSongName.setText(file.getName().replace(".mp3",""));
+                tvMainSongName.setText(file.getName().replace(".mp3", ""));
 
                 byte[] image = getAlbumArt(file.getPath());
-                if(image != null){
+                if (image != null) {
                     Glide.with(getBaseContext()).asBitmap()
                             .load(image)
                             .into(smallPlayerAlbum);
-                }else{
+                } else {
                     Glide.with(getBaseContext()).asBitmap()
                             .load(R.drawable.icon)
                             .into(smallPlayerAlbum);
@@ -125,7 +143,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        switch (itemId){
+        switch (itemId) {
             case R.id.menu_action_refresh:
                 triggerRebirth(this);
                 break;
@@ -133,7 +151,7 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private byte[] getAlbumArt(String uri){
+    private byte[] getAlbumArt(String uri) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(uri);
         byte[] art = retriever.getEmbeddedPicture();

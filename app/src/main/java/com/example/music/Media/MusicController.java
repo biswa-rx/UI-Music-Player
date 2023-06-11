@@ -106,18 +106,3 @@ public class MusicController {
 //        }
 //    };
 
-
-
-//    private String createTime(int Duration) {
-//        String time="0";
-//        int sec=Duration/1000;
-//        int min=sec/60;
-//        time+=min+":";
-//        sec=sec%60;
-//        if(sec<10) {
-//            time+='0';
-//        }
-//        time+=sec;
-//        return time;
-//    }
-

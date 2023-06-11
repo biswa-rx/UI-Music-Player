@@ -18,7 +18,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.example.music.CallbackMethod.NotificationCallback;
+import com.example.music.CallbackInterface.NotificationCallback;
 import com.example.music.MainActivity;
 import com.example.music.Media.MediaPlayer;
 import com.example.music.Media.MusicController;
@@ -91,7 +91,7 @@ public class MusicService extends Service implements NotificationCallback {
             if (action.equals("PLAY")) {
                 Uri musicUri = intent.getParcelableExtra("URI");
                 if (checkNotification()) {
-                    //recreate notification
+                    updateNotification(new File(String.valueOf(musicUri)));
                 }
                 playMusic(musicUri);
             } else if (action.equals("PAUSE")) {
