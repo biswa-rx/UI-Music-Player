@@ -214,7 +214,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (file != null) {
             btPlayPause.setChecked(false);
             tvSongName.setText(file.getName().replace(".mp3", "").replace("_", " "));
-            tvSongName.setSelected(true);
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(file.getPath());
             tvArtistName.setText(
@@ -246,6 +245,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                         .load(image)
                         .into(songImageView);
             } else {
+                tvSongName.setTextColor(Color.parseColor("#FFFFF2CA"));
+                updateButtonColor(Color.parseColor("#FFFFF2CA"));
                 Glide.with(getBaseContext()).asBitmap()
                         .load(R.drawable.music_theme_bg)
                         .into(songImageView);
