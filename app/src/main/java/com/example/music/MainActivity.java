@@ -1,8 +1,10 @@
 package com.example.music;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -28,6 +31,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.music.Media.MusicController;
+import com.example.music.Utils.PlaySerializer;
 import com.example.music.ViewModel.SharedViewModel;
 import com.example.music.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
@@ -124,7 +128,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        // Register the receiver
+        IntentFilter filter = new IntentFilter("com.example.ACTION_UPDATE_VIEW");
+        LocalBroadcastManager.getInstance(this).registerReceiver(updateReceiver, filter);
     }
+    private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,4 +181,20 @@ public class MainActivity extends AppCompatActivity {
         Runtime.getRuntime().exit(0);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MusicController.getInstance().isMusicPaused()){
+            mainUiPlayBT.setChecked(true);
+        }else{
+            mainUiPlayBT.setChecked(false);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Unregister the receiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(updateReceiver);
+        super.onDestroy();
+    }
 }

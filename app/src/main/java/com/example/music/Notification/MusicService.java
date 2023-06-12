@@ -17,17 +17,20 @@ import android.support.v4.media.session.MediaSessionCompat;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.music.CallbackInterface.MusicCompletionCallback;
 import com.example.music.CallbackInterface.NotificationCallback;
 import com.example.music.MainActivity;
 import com.example.music.Media.MediaPlayer;
 import com.example.music.Media.MusicController;
 import com.example.music.R;
+import com.example.music.Utils.PlaySerializer;
 
 import java.io.File;
 
 
-public class MusicService extends Service implements NotificationCallback {
+public class MusicService extends Service implements NotificationCallback, MusicCompletionCallback {
     //    private MediaPlayer mediaPlayer;
     MusicController musicController;
     static MediaMetadataCompat mediaMetadata;
@@ -80,7 +83,7 @@ public class MusicService extends Service implements NotificationCallback {
         startForeground(NOTIFICATION_ID, builder.build());
 
         MediaPlayer.getInstance().setNotificationCallback(this);
-
+        MediaPlayer.getInstance().setMusicCompletionCallback(this);
     }
 
     @Override
@@ -203,5 +206,12 @@ public class MusicService extends Service implements NotificationCallback {
         Intent playIntent = new Intent(this, NotificationActionReceiver.class);
         playIntent.setAction(action);
         return PendingIntent.getBroadcast(getApplicationContext(), 0, playIntent, PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    @Override
+    public void onMusicCompletion() {
+        MusicController.getInstance().playMusic(getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.SHUFFLE).toString()));
+        Intent updateIntent = new Intent("com.example.ACTION_UPDATE_VIEW");
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(updateIntent);
     }
 }

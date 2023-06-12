@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.SystemClock;
 
+import com.example.music.CallbackInterface.MusicCompletionCallback;
 import com.example.music.CallbackInterface.NotificationCallback;
 import com.example.music.CallbackInterface.SeekbarUpdateCallback;
 
@@ -19,6 +20,7 @@ public class MediaPlayer {
     android.media.MediaPlayer mediaPlayer;
     NotificationCallback notificationCallback;
     SeekbarUpdateCallback seekbarUpdateCallback;
+    MusicCompletionCallback musicCompletionCallback;
     int musicDuration = 0;
     public static volatile boolean seekUpdate = true;
 
@@ -64,7 +66,14 @@ public class MediaPlayer {
         }
         isPlaying = true;
         isPause = false;
-
+        mediaPlayer.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(android.media.MediaPlayer mediaPlayer) {
+                if (musicCompletionCallback != null) {
+                    musicCompletionCallback.onMusicCompletion();
+                }
+            }
+        });
     }
 
 
@@ -119,6 +128,9 @@ public class MediaPlayer {
 
     public void setSeekbarUpdateCallback(SeekbarUpdateCallback seekbarUpdateCallback) {
         this.seekbarUpdateCallback = seekbarUpdateCallback;
+    }
+    public void setMusicCompletionCallback(MusicCompletionCallback musicCompletionCallback){
+        this.musicCompletionCallback = musicCompletionCallback;
     }
 
     public void musicSeekTo(int duration) {

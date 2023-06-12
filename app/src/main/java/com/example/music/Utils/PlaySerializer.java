@@ -24,7 +24,6 @@ public class PlaySerializer {
     public static PlaySerializer getInstance() {
         if (instance == null) {
             instance = new PlaySerializer();
-            return instance;
         }
         return instance;
     }
@@ -42,10 +41,10 @@ public class PlaySerializer {
             primaryMusicList.add(i,new primaryIndex());
         }
         for (int index = 0; index < musicList.size(); index++) {
-            primaryMusicList.add(shuffledMusicList.get(index).primaryIndex,
+            primaryMusicList.set(shuffledMusicList.get(index).primaryIndex,
                     new primaryIndex(shuffledMusicList.get(index).file, index));
         }
-        System.out.println(shuffledMusicList.toString());
+        System.out.println(primaryMusicList.toString());
     }
 
     public File getMusicFile(int selectedIndex) {
@@ -126,6 +125,10 @@ public class PlaySerializer {
     }
     public void setSelectedIndex(int index) {
         this.selectedIndex = index;
+        virtualIndex = primaryMusicList.get(selectedIndex).shuffledIndex;
+    }
+    public int getSelectedIndex() {
+        return selectedIndex;
     }
 
 }

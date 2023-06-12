@@ -1,6 +1,9 @@
 package com.example.music;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -25,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
@@ -33,6 +38,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.music.CallbackInterface.SeekbarUpdateCallback;
 import com.example.music.Media.MediaPlayer;
 import com.example.music.Media.MusicController;
+import com.example.music.Utils.PlaySerializer;
 import com.example.music.Utils.TimeConverter;
 import com.example.music.ViewModel.SharedViewModel;
 
@@ -113,8 +119,17 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 MediaPlayer.seekUpdate = true;
             }
         });
-    }
 
+        // Register the receiver
+        IntentFilter filter = new IntentFilter("com.example.ACTION_UPDATE_VIEW");
+        LocalBroadcastManager.getInstance(this).registerReceiver(updateReceiver, filter);
+    }
+    private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
+        }
+    };
 
     void initUi() {
         btPlayPause = findViewById(R.id.play_button);
@@ -147,7 +162,15 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
+        int clickedId = view.getId();
+        if(clickedId == R.id.next_button){
+            MusicController.getInstance().playMusic(getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.SHUFFLE).toString()));
+            sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
 
+        }else if(clickedId == R.id.previous_button){
+            MusicController.getInstance().playMusic(getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getPreviousMusicFile(PlaySerializer.SHUFFLE).toString()));
+            sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
+        }
     }
 
     private byte[] getAlbumArt(String uri) {
@@ -191,6 +214,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (file != null) {
             btPlayPause.setChecked(false);
             tvSongName.setText(file.getName().replace(".mp3", "").replace("_", " "));
+            tvSongName.setSelected(true);
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(file.getPath());
             tvArtistName.setText(
@@ -275,7 +299,23 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         tvSongLive.setText(TimeConverter.millisecondToString(mediaProgress));
     }
 
-//
+    @Override
+    protected void onResume() {
+        if(MusicController.getInstance().isMusicPaused()){
+            btPlayPause.setChecked(true);
+        }else{
+            btPlayPause.setChecked(false);
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Unregister the receiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(updateReceiver);
+        super.onDestroy();
+    }
+    //
 //    update_seek = new Thread(){
 //        @Override
 //        public void run() {
