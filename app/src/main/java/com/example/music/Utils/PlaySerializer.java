@@ -13,8 +13,8 @@ public class PlaySerializer {
     static PlaySerializer instance;
     ArrayList<File> musicList;
     Integer musicListSize = null;
-    private ArrayList<shuffledIndex> shuffledMusicList;
-    private ArrayList<primaryIndex> primaryMusicList;
+    private ArrayList<shuffledIndex> shuffledMusicList = new ArrayList<>();
+    private ArrayList<primaryIndex> primaryMusicList = new ArrayList<>();
     private int selectedIndex = 0;
     private int virtualIndex;
 
@@ -29,21 +29,26 @@ public class PlaySerializer {
         return instance;
     }
 
-    void setMusicList(ArrayList<File> musicList) {
+    public void setMusicList(ArrayList<File> musicList) {
+        shuffledMusicList.clear();
+        primaryMusicList.clear();
         this.musicList = musicList;
         this.musicListSize = musicList.size();
         for (int index = 0; index < musicList.size(); index++) {
             shuffledMusicList.add(new shuffledIndex(musicList.get(index), index));
         }
         Collections.shuffle(shuffledMusicList);
+        for(int i = 0; i<musicListSize; i++) {
+            primaryMusicList.add(i,new primaryIndex());
+        }
         for (int index = 0; index < musicList.size(); index++) {
             primaryMusicList.add(shuffledMusicList.get(index).primaryIndex,
                     new primaryIndex(shuffledMusicList.get(index).file, index));
         }
-//        System.out.println(shuffledMusicList.toString());
+        System.out.println(shuffledMusicList.toString());
     }
 
-    File getMusicFile(int selectedIndex) {
+    public File getMusicFile(int selectedIndex) {
         this.selectedIndex = selectedIndex;
         File file = null;
         if(musicListSize != null) {
@@ -58,7 +63,7 @@ public class PlaySerializer {
         return file;
     }
 
-    File getNextMusicFile(int playMode) {
+    public File getNextMusicFile(int playMode) {
         File file = null;
         //Empty list check
         if(musicListSize == null || musicListSize == 0) {
@@ -89,7 +94,7 @@ public class PlaySerializer {
         return file;
     }
 
-    File getPreviousMusicFile(int playMode) {
+    public File getPreviousMusicFile(int playMode) {
         File file = null;
         //Empty list check
         if(musicListSize == null || musicListSize == 0) {
@@ -119,7 +124,9 @@ public class PlaySerializer {
         }
         return file;
     }
-
+    public void setSelectedIndex(int index) {
+        this.selectedIndex = index;
+    }
 
 }
 
@@ -131,6 +138,9 @@ class primaryIndex {
         this.file = file;
         this.shuffledIndex = shuffledIndex;
     }
+
+    public primaryIndex() {
+    }
 }
 
 class shuffledIndex {
@@ -140,5 +150,8 @@ class shuffledIndex {
     public shuffledIndex(File file, int primaryIndex) {
         this.file = file;
         this.primaryIndex = primaryIndex;
+    }
+
+    public shuffledIndex() {
     }
 }

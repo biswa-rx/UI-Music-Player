@@ -17,6 +17,7 @@ import com.example.music.Models.songListModel;
 import com.example.music.Media.MusicController;
 import com.example.music.Notification.MusicService;
 import com.example.music.R;
+import com.example.music.Utils.PlaySerializer;
 import com.example.music.ViewModel.SharedViewModel;
 
 import java.io.File;
@@ -36,6 +37,7 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
         recyclerView = view.findViewById(R.id.song_list_rv);
         songList = new ArrayList<>();
         sharedViewModel.getCurrentSongList().observe(getViewLifecycleOwner(), files -> {
+            PlaySerializer.getInstance().setMusicList(files);
             for (int i = 0; i < files.size(); i++) {
                 songList.add(new songListModel(files.get(i).getName(), files.get(i).getPath()));
             }
@@ -55,6 +57,7 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
     @Override
     public void onItemClick(int position) {
         ArrayList<File> songList = sharedViewModel.getCurrentSongList().getValue();
+        PlaySerializer.getInstance().setSelectedIndex(position);
         File file = songList.get(position);
         Uri uri = Uri.parse(file.toString());
         Intent playIntent = new Intent(requireContext(), MusicService.class);

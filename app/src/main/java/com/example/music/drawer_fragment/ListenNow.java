@@ -94,7 +94,6 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
                 tvPath.setText("Recently Played");
             }
         });
-
     }
 
     @Override
