@@ -26,24 +26,24 @@ public class MediaPlayer {
 
     private MediaPlayer() {
         // Private constructor to prevent instantiation
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while(true) {
-                        if (seekUpdate) {
-                            if (seekbarUpdateCallback != null && isPlaying) {
-                                try {
-                                    seekbarUpdateCallback.onSeekbarUpdate(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
-                                }catch (Exception e){
-                                    System.out.println(e.toString() + " Exception in seekbar update...");
-                                }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (seekUpdate) {
+                        if (seekbarUpdateCallback != null && isPlaying) {
+                            try {
+                                seekbarUpdateCallback.onSeekbarUpdate(mediaPlayer.getCurrentPosition(), mediaPlayer.getDuration());
+                            } catch (Exception e) {
+                                System.out.println(e.toString() + " Exception in seekbar update...");
                             }
-                            SystemClock.sleep(500);
-//                            System.out.println("Running");
                         }
+                        SystemClock.sleep(500);
+//                            System.out.println("Running");
                     }
                 }
-            }).start();
+            }
+        }).start();
     }
 
     public static synchronized MediaPlayer getInstance() {
@@ -107,8 +107,9 @@ public class MediaPlayer {
     public int getMusicDuration() {
         return musicDuration;
     }
-    public int getCurrentPosition(){
-        if(isPlaying){
+
+    public int getCurrentPosition() {
+        if (isPlaying) {
             return mediaPlayer.getCurrentPosition();
         }
         return 0;
@@ -129,7 +130,8 @@ public class MediaPlayer {
     public void setSeekbarUpdateCallback(SeekbarUpdateCallback seekbarUpdateCallback) {
         this.seekbarUpdateCallback = seekbarUpdateCallback;
     }
-    public void setMusicCompletionCallback(MusicCompletionCallback musicCompletionCallback){
+
+    public void setMusicCompletionCallback(MusicCompletionCallback musicCompletionCallback) {
         this.musicCompletionCallback = musicCompletionCallback;
     }
 

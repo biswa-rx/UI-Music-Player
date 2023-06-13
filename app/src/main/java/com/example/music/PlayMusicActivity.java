@@ -121,13 +121,26 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         });
 
         // Register the receiver
-        IntentFilter filter = new IntentFilter("com.example.ACTION_UPDATE_VIEW");
-        LocalBroadcastManager.getInstance(this).registerReceiver(updateReceiver, filter);
+        IntentFilter updateViewFilter = new IntentFilter("com.example.ACTION_UPDATE_VIEW");
+        LocalBroadcastManager.getInstance(this).registerReceiver(updateReceiver, updateViewFilter);
+        // Register the receiver
+        IntentFilter musicPauseFilter = new IntentFilter("com.example.ACTION_MUSIC");
+        LocalBroadcastManager.getInstance(this).registerReceiver(pauseReceiver, musicPauseFilter);
     }
     private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
+        }
+    };
+    private BroadcastReceiver pauseReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(MusicController.getInstance().isMusicPaused()){
+                btPlayPause.setChecked(true);
+            }else{
+                btPlayPause.setChecked(false);
+            }
         }
     };
 
@@ -164,11 +177,13 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         int clickedId = view.getId();
         if(clickedId == R.id.next_button){
-            MusicController.getInstance().playMusic(getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.SHUFFLE).toString()));
+            MusicController.getInstance().playMusic(getApplicationContext(),
+                    Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.SHUFFLE).toString()));
             sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
 
         }else if(clickedId == R.id.previous_button){
-            MusicController.getInstance().playMusic(getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getPreviousMusicFile(PlaySerializer.SHUFFLE).toString()));
+            MusicController.getInstance().playMusic(getApplicationContext(),
+                    Uri.parse(PlaySerializer.getInstance().getPreviousMusicFile(PlaySerializer.SHUFFLE).toString()));
             sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
         }
     }
@@ -314,6 +329,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     protected void onDestroy() {
         // Unregister the receiver
         LocalBroadcastManager.getInstance(this).unregisterReceiver(updateReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(pauseReceiver);
         super.onDestroy();
     }
     //

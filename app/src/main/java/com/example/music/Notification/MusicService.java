@@ -185,7 +185,7 @@ public class MusicService extends Service implements NotificationCallback, Music
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if(MediaPlayer.getInstance().isPause()){
             notificationManager.notify(NOTIFICATION_ID, builder.build());
-            stopForeground(false);
+//            stopForeground(false);
         }else{
             startForeground(NOTIFICATION_ID,builder.build());
         }

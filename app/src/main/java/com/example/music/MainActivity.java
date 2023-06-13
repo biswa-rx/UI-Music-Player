@@ -131,11 +131,24 @@ public class MainActivity extends AppCompatActivity {
         // Register the receiver
         IntentFilter filter = new IntentFilter("com.example.ACTION_UPDATE_VIEW");
         LocalBroadcastManager.getInstance(this).registerReceiver(updateReceiver, filter);
+        // Register the receiver
+        IntentFilter musicPauseFilter = new IntentFilter("com.example.ACTION_MUSIC");
+        LocalBroadcastManager.getInstance(this).registerReceiver(pauseReceiver, musicPauseFilter);
     }
     private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
+        }
+    };
+    private BroadcastReceiver pauseReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(MusicController.getInstance().isMusicPaused()){
+                mainUiPlayBT.setChecked(true);
+            }else{
+                mainUiPlayBT.setChecked(false);
+            }
         }
     };
 
@@ -195,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         // Unregister the receiver
         LocalBroadcastManager.getInstance(this).unregisterReceiver(updateReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(pauseReceiver);
         super.onDestroy();
     }
 }
