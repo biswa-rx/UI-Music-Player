@@ -214,7 +214,7 @@ public class MusicService extends Service implements NotificationCallback, Music
 
     @Override
     public void onMusicCompletion() {
-        MusicController.getInstance().playMusic(getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.SHUFFLE).toString()));
+        MusicController.getInstance().playMusic(getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.getInstance().getPlayMode()).toString()));
         Intent updateIntent = new Intent("com.example.ACTION_UPDATE_VIEW");
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(updateIntent);
     }

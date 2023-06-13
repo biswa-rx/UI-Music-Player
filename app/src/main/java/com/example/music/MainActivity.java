@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +33,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.music.Media.MusicController;
+import com.example.music.Utils.MediaData;
 import com.example.music.Utils.PlaySerializer;
 import com.example.music.ViewModel.SharedViewModel;
 import com.example.music.databinding.ActivityMainBinding;
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     ConstraintLayout bottom_sheet_player;
     ImageView smallPlayerAlbum;
     ToggleButton mainUiPlayBT;
-    TextView tvMainSongName;
+    TextView tvMainSongName, tvMainSongArtist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         tvMainSongName = findViewById(R.id.tv_main_song_name);
         tvMainSongName.setSelected(true);
+        tvMainSongArtist = findViewById(R.id.artist_name);
 
         smallPlayerAlbum = findViewById(R.id.music_image);
         mainUiPlayBT = findViewById(R.id.play_button_main_ui);
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                     if (sharedViewModel.getCurrentSong().getValue() == null) {
                         System.out.println("Nothing to  play... Here I have to implement shared preference for previous playlist detect and play");
                     } else {
-                            MusicController.getInstance().justPlay();
+                        MusicController.getInstance().justPlay();
                     }
                 }
             }
@@ -116,16 +120,31 @@ public class MainActivity extends AppCompatActivity {
                 mainUiPlayBT.setChecked(false);
                 tvMainSongName.setText(file.getName().replace(".mp3", ""));
 
-                byte[] image = getAlbumArt(file.getPath());
-                if (image != null) {
-                    Glide.with(getBaseContext()).asBitmap()
-                            .load(image)
-                            .into(smallPlayerAlbum);
-                } else {
-                    Glide.with(getBaseContext()).asBitmap()
-                            .load(R.drawable.icon)
-                            .into(smallPlayerAlbum);
-                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        byte[] image = getAlbumArt(file.getPath());
+                        String artistName = MediaData.getSongArtist(file.getPath());
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvMainSongArtist.setText(artistName);
+                                if (image != null) {
+                                    Glide.with(getBaseContext()).asBitmap()
+                                            .load(image)
+                                            .into(smallPlayerAlbum);
+                                } else {
+                                    Glide.with(getBaseContext()).asBitmap()
+                                            .load(R.drawable.icon)
+                                            .into(smallPlayerAlbum);
+                                }
+                            }
+                        });
+
+                    }
+                }).start();
+
             }
         });
         // Register the receiver
@@ -135,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter musicPauseFilter = new IntentFilter("com.example.ACTION_MUSIC");
         LocalBroadcastManager.getInstance(this).registerReceiver(pauseReceiver, musicPauseFilter);
     }
+
     private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -144,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver pauseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(MusicController.getInstance().isMusicPaused()){
+            if (MusicController.getInstance().isMusicPaused()) {
                 mainUiPlayBT.setChecked(true);
-            }else{
+            } else {
                 mainUiPlayBT.setChecked(false);
             }
         }
@@ -197,9 +217,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(MusicController.getInstance().isMusicPaused()){
+        if (MusicController.getInstance().isMusicPaused()) {
             mainUiPlayBT.setChecked(true);
-        }else{
+        } else {
             mainUiPlayBT.setChecked(false);
         }
     }

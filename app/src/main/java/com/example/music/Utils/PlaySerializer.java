@@ -17,6 +17,7 @@ public class PlaySerializer {
     private ArrayList<primaryIndex> primaryMusicList = new ArrayList<>();
     private int selectedIndex = 0;
     private int virtualIndex;
+    private int playMode = 0;
 
     PlaySerializer() {
     }
@@ -113,7 +114,7 @@ public class PlaySerializer {
         } else if (playMode == SHUFFLE) {
             virtualIndex--;
             if(virtualIndex < 0) {
-                virtualIndex = musicListSize;
+                virtualIndex = musicListSize-1;
             }
             file = shuffledMusicList.get(virtualIndex).file;
             selectedIndex = shuffledMusicList.get(virtualIndex).primaryIndex;
@@ -129,6 +130,13 @@ public class PlaySerializer {
     }
     public int getSelectedIndex() {
         return selectedIndex;
+    }
+    public int getPlayMode() {
+        return playMode;
+    }
+
+    public void setPlayMode(int PLAY_MODE) {
+        this.playMode = PLAY_MODE;
     }
 
 }

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,6 +60,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     TextView tvSongName, tvSongEnd, tvSongLive, tvArtistName;
     SeekBar bs_seekBar;
     ImageButton downArrowButton;
+    int playModeSelector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_play_music);
         getSupportActionBar().hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        SharedPreferences sharedPreferences = getSharedPreferences("MusicPreferences", Context.MODE_PRIVATE);
+        playModeSelector = sharedPreferences.getInt("PlayMode", 0);
+        PlaySerializer.getInstance().setPlayMode(playModeSelector);
         initUi();
         Intent intent = getIntent();
         if (intent != null && intent.getData() != null) {
@@ -92,6 +97,29 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 }
             }
         });
+        btRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if (playModeSelector == PlaySerializer.REPEAT_ALL) {
+                    btRepeat.setBackground(getResources().getDrawable(R.drawable.icon_repet_one));
+                    PlaySerializer.getInstance().setPlayMode(PlaySerializer.REPEAT_ONE);
+                    playModeSelector = PlaySerializer.REPEAT_ONE;
+                    editor.putInt("PlayMode",PlaySerializer.REPEAT_ONE);
+                } else if (playModeSelector == PlaySerializer.REPEAT_ONE) {
+                    btRepeat.setBackground(getResources().getDrawable(R.drawable.icon_shuffle_on));
+                    PlaySerializer.getInstance().setPlayMode(PlaySerializer.SHUFFLE);
+                    playModeSelector = PlaySerializer.SHUFFLE;
+                    editor.putInt("PlayMode",PlaySerializer.SHUFFLE);
+                } else {
+                    btRepeat.setBackground(getResources().getDrawable(R.drawable.icon_repeat_on));
+                    PlaySerializer.getInstance().setPlayMode(PlaySerializer.REPEAT_ALL);
+                    playModeSelector = PlaySerializer.REPEAT_ALL;
+                    editor.putInt("PlayMode",PlaySerializer.REPEAT_ALL);
+                }
+                editor.apply();
+            }
+        });
         downArrowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,7 +130,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         bs_seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser) {
+                if (fromUser) {
                     String currentTime = TimeConverter.millisecondToString(progress);
                     tvSongLive.setText(currentTime);
                 }
@@ -127,6 +155,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         IntentFilter musicPauseFilter = new IntentFilter("com.example.ACTION_MUSIC");
         LocalBroadcastManager.getInstance(this).registerReceiver(pauseReceiver, musicPauseFilter);
     }
+
     private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -136,9 +165,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private BroadcastReceiver pauseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(MusicController.getInstance().isMusicPaused()){
+            if (MusicController.getInstance().isMusicPaused()) {
                 btPlayPause.setChecked(true);
-            }else{
+            } else {
                 btPlayPause.setChecked(false);
             }
         }
@@ -171,19 +200,27 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         } else {
             btPlayPause.setChecked(false);
         }
+
+        if (playModeSelector == PlaySerializer.REPEAT_ALL) {
+            btRepeat.setBackground(getResources().getDrawable(R.drawable.icon_repeat_on));
+        } else if (playModeSelector == PlaySerializer.REPEAT_ONE) {
+            btRepeat.setBackground(getResources().getDrawable(R.drawable.icon_repet_one));
+        } else {
+            btRepeat.setBackground(getResources().getDrawable(R.drawable.icon_shuffle_on));
+        }
     }
 
     @Override
     public void onClick(View view) {
         int clickedId = view.getId();
-        if(clickedId == R.id.next_button){
+        if (clickedId == R.id.next_button) {
             MusicController.getInstance().playMusic(getApplicationContext(),
-                    Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.SHUFFLE).toString()));
+                    Uri.parse(PlaySerializer.getInstance().getNextMusicFile(playModeSelector).toString()));
             sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
 
-        }else if(clickedId == R.id.previous_button){
+        } else if (clickedId == R.id.previous_button) {
             MusicController.getInstance().playMusic(getApplicationContext(),
-                    Uri.parse(PlaySerializer.getInstance().getPreviousMusicFile(PlaySerializer.SHUFFLE).toString()));
+                    Uri.parse(PlaySerializer.getInstance().getPreviousMusicFile(playModeSelector).toString()));
             sharedViewModel.setCurrentSongNumber(PlaySerializer.getInstance().getSelectedIndex());
         }
     }
@@ -317,9 +354,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     protected void onResume() {
-        if(MusicController.getInstance().isMusicPaused()){
+        if (MusicController.getInstance().isMusicPaused()) {
             btPlayPause.setChecked(true);
-        }else{
+        } else {
             btPlayPause.setChecked(false);
         }
         super.onResume();
@@ -332,42 +369,4 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pauseReceiver);
         super.onDestroy();
     }
-    //
-//    update_seek = new Thread(){
-//        @Override
-//        public void run() {
-//            int currentPosition = 0;
-//
-//            while(true) {
-//                if (!updateSeekFlag) {
-//                    if(mediaPlayer != null) {
-//                        currentPosition = mediaPlayer.getCurrentPosition();
-//                        bs_seekBar.setProgress(currentPosition);
-//                    }
-//                }
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    };
-//        update_seek.start();
 }
-
-
-//
-//        mainUiPlayBT.setOnClickListener(new View.OnClickListener() {
-//@Override
-//public void onClick(View view) {
-//        if(mediaPlayer!=null) {
-//        if (mainUiPlayBT.isChecked()) {
-//        mediaPlayer.pause();
-//        } else {
-//        mediaPlayer.start();
-//        }
-//        }
-//        }
-//        });
-//}

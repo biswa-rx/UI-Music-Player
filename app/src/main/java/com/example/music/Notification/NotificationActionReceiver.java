@@ -28,11 +28,11 @@ public class NotificationActionReceiver extends BroadcastReceiver {
                 LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(updateIntent);
             }
         } else if (action != null && action.equals("ACTION_NEXT")) {
-            MusicController.getInstance().playMusic(context.getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.SHUFFLE).toString()));
+            MusicController.getInstance().playMusic(context.getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.getInstance().getPlayMode()).toString()));
             Intent updateIntent = new Intent("com.example.ACTION_UPDATE_VIEW");
             LocalBroadcastManager.getInstance(context).sendBroadcast(updateIntent);
         } else if (action != null && action.equals("ACTION_PREVIOUS")) {
-            MusicController.getInstance().playMusic(context.getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.SHUFFLE).toString()));
+            MusicController.getInstance().playMusic(context.getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getPreviousMusicFile(PlaySerializer.getInstance().getPlayMode()).toString()));
             Intent updateIntent = new Intent("com.example.ACTION_UPDATE_VIEW");
             LocalBroadcastManager.getInstance(context).sendBroadcast(updateIntent);
         }

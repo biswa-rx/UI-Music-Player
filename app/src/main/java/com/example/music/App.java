@@ -3,12 +3,16 @@ package com.example.music;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.music.Utils.PlaySerializer;
 
 import java.io.File;
 
@@ -22,7 +26,14 @@ public class App extends Application {
         super.onCreate();
         createNotificationChannel();
         setupThemeBitmap();
+        setupPlayMode();
     }
+
+    private void setupPlayMode() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MusicPreferences", Context.MODE_PRIVATE);
+        PlaySerializer.getInstance().setPlayMode(sharedPreferences.getInt("PlayMode", 0));
+    }
+
     private void setupThemeBitmap() {
         new Thread(new Runnable() {
             @Override
