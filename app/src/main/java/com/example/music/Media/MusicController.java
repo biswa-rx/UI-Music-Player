@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class MusicController {
     private static MediaPlayer mediaPlayer;
     private static int currentSongNumber = 0;
-    private ArrayList<File> songList;
+//    private ArrayList<File> songList;
 
     //Singleton instance
     private static MusicController instance;
@@ -30,21 +30,21 @@ public class MusicController {
     public boolean isMusicPaused(){
         return mediaPlayer.isPause();
     }
-    public void setSongList(ArrayList<File> songList){
-        this.songList = songList;
-    }
-    public ArrayList<File> getSongList(){
-        return songList;
-    }
+//    public void setSongList(ArrayList<File> songList){
+//        this.songList = songList;
+//    }
+//    public ArrayList<File> getSongList(){
+//        return songList;
+//    }
     public void setSongNumber(int songNumber){
         currentSongNumber = songNumber;
     }
     public int getCurrentSongNumber(){
         return currentSongNumber;
     }
-    public File getCurrentSongPath(){
-        return songList.get(currentSongNumber);
-    }
+//    public File getCurrentSongPath(){
+//        return songList.get(currentSongNumber);
+//    }
     public void pauseMusic() {
         mediaPlayer.pause();
     }

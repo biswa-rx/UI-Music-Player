@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.music.App;
 import com.example.music.CallbackInterface.MusicCompletionCallback;
 import com.example.music.CallbackInterface.NotificationCallback;
 import com.example.music.MainActivity;
@@ -40,10 +41,13 @@ public class MusicService extends Service implements NotificationCallback, Music
     public static final int NOTIFICATION_ID = 124;
     private boolean isPlaying;
     PendingIntent playPendingIntent,previousPendingIntent,nextPendingIntent;
+    Bitmap themeBitmap;
     @Override
     public void onCreate() {
         super.onCreate();
         musicController = MusicController.getInstance();
+        //Problem shower the performance due to BitmapFactory.decodeResource(getResources(), R.drawable.music_theme_bg)
+        themeBitmap = App.themeBitmap;
 
         playPendingIntent = initIntent("ACTION_PLAY");
         previousPendingIntent = initIntent("ACTION_NEXT");
@@ -170,7 +174,7 @@ public class MusicService extends Service implements NotificationCallback, Music
             mediaMetadata = new MediaMetadataCompat.Builder()
                     .putString(MediaMetadataCompat.METADATA_KEY_TITLE, file.getName())
                     .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
-                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.music_theme_bg))
+                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, themeBitmap)
                     .build();
         }
         mediaSession.setMetadata(mediaMetadata);

@@ -66,6 +66,6 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
         requireContext().startService(playIntent);
         sharedViewModel.setCurrentSongNumber(position);
         MusicController.getInstance().setSongNumber(position);
-        MusicController.getInstance().setSongList(songList);
+//        MusicController.getInstance().setSongList(songList);
     }
 }
