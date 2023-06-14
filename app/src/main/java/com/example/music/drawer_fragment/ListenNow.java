@@ -96,17 +96,17 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
                 loadSongProgress.setVisibility(View.GONE);
                 tvPath.setText("Recently Played");
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("MusicPreferences", Context.MODE_PRIVATE);
-                if(sharedPreferences.getInt("PlaylistNumber",-1) == -1){
-                    sharedViewModel.setMutableCurrentSongList(sharedViewModel.getAllSongList().getValue());
-                }else{
-                    sharedViewModel.setMutableCurrentSongListFromFolder(sharedPreferences.getInt("PlaylistNumber",-1));
-                }
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if(sharedPreferences.getInt("PlaylistNumber",-1) == -1){
+                            sharedViewModel.setMutableCurrentSongList(sharedViewModel.getAllSongList().getValue());
+                        }else{
+                            sharedViewModel.setMutableCurrentSongListFromFolder(sharedPreferences.getInt("PlaylistNumber",-1));
+                        }
                         sharedViewModel.setCurrentSongNumber(sharedPreferences.getInt("SongNumber",0));//causing error due to faster access from thread...
                     }
-                },500);
+                },1000);
             }
         });
     }
