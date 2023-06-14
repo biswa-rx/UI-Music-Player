@@ -9,6 +9,8 @@ import com.example.music.drawer_fragment.ListenNow;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class FetchSong {
     public static FetchSong fetchSong;
@@ -84,9 +86,18 @@ public class FetchSong {
                 }).start();
             }
         }
-        while(totalFile!=scanedFile[0]){
+        while(totalFile != scanedFile[0]){
             SystemClock.sleep(2);
         }
+        // Sort the ArrayList based on the name variable
+        Collections.sort(playList, new Comparator<playListModel>() {
+            @Override
+            public int compare(playListModel listModel1, playListModel listModel2) {
+                return listModel1.getPlayListName().compareTo(listModel2.getPlayListName());
+            }
+        });
+
+
         return playList;
     }
 

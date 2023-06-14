@@ -10,4 +10,11 @@ public class MediaData {
                 ? "Unknown artist"
                 : retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
     }
+    public static byte[] getAlbumArt(String uri){
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(uri);
+        byte[] art = retriever.getEmbeddedPicture();
+        retriever.release();
+        return art;
+    }
 }

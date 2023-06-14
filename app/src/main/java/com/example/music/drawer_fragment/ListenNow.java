@@ -15,6 +15,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +101,12 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
                 }else{
                     sharedViewModel.setMutableCurrentSongListFromFolder(sharedPreferences.getInt("PlaylistNumber",-1));
                 }
-                sharedViewModel.setCurrentSongNumber(sharedPreferences.getInt("SongNumber",0));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        sharedViewModel.setCurrentSongNumber(sharedPreferences.getInt("SongNumber",0));//causing error due to faster access from thread...
+                    }
+                },500);
             }
         });
     }
