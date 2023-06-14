@@ -39,6 +39,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.music.CallbackInterface.SeekbarUpdateCallback;
 import com.example.music.Media.MediaPlayer;
 import com.example.music.Media.MusicController;
+import com.example.music.Notification.MusicService;
 import com.example.music.Utils.PlaySerializer;
 import com.example.music.Utils.TimeConverter;
 import com.example.music.ViewModel.SharedViewModel;
@@ -75,9 +76,22 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         initUi();
         Intent intent = getIntent();
         if (intent != null && intent.getData() != null) {
-            Uri fileUri = intent.getData();
-            MusicController.getInstance().playMusic(this, fileUri);
+            Uri fileUri = intent.getData();//Error in media metadata retriever due to on format file uri
+            MusicController.getInstance().playMusic(this,
+                    Uri.parse(new File(fileUri.getPath()).getPath().replace("/external_files","/storage/emulated/0")));
             btPlayPause.setChecked(false);
+            Intent playIntent = new Intent(getApplicationContext(), MusicService.class);
+            playIntent.setAction("PLAY");
+            playIntent.putExtra("URI",
+                    Uri.parse(new File(fileUri.getPath()).getPath().replace("/external_files","/storage/emulated/0")));
+            getApplicationContext().startService(playIntent);
+            playMusicThemeGenerator(new File(
+                    Uri.parse(new File(
+                            fileUri.getPath()).getPath().replace("/external_files","/storage/emulated/0")).toString()));
+            btNext.setVisibility(View.INVISIBLE);
+            btPrevious.setVisibility(View.INVISIBLE);
+            btSuffle.setVisibility(View.INVISIBLE);
+            btRepeat.setVisibility(View.INVISIBLE);
         }
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         sharedViewModel.getCurrentSong().observe(this, new Observer<File>() {

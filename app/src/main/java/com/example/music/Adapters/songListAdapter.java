@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.music.Models.songListModel;
 import com.example.music.R;
+import com.example.music.Utils.MediaData;
 
 import java.util.ArrayList;
 
@@ -57,7 +58,7 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
             Drawable drawable;
             @Override
             public void run() {
-                byte[] image = getAlbumArt(songList.get(temp).getPath());
+                byte[] image = MediaData.getAlbumArt(songList.get(temp).getPath());
                 artist = songList.get(temp).getSongArtist();
                 if(image != null) {
                     bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
@@ -107,13 +108,5 @@ public class songListAdapter extends RecyclerView.Adapter<songListAdapter.viewHo
     }
     public interface OnSongClickListener{
         void onItemClick(int position);
-    }
-
-    private byte[] getAlbumArt(String uri){
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(uri);
-        byte[] art = retriever.getEmbeddedPicture();
-        retriever.release();
-        return art;
     }
 }

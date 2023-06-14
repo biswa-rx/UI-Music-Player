@@ -61,6 +61,7 @@ public class MediaPlayer {
         mediaPlayer = android.media.MediaPlayer.create(context, uri);
         musicDuration = mediaPlayer.getDuration();
         mediaPlayer.start();
+        System.out.println(new File(uri.getPath()).getPath());
         if (notificationCallback != null) {
             notificationCallback.onNotificationTextUpdate(new File(uri.getPath()));
         }

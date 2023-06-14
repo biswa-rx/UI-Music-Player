@@ -29,6 +29,7 @@ import com.example.music.R;
 import com.example.music.Utils.PlaySerializer;
 
 import java.io.File;
+import java.util.Locale;
 
 
 public class MusicService extends Service implements NotificationCallback, MusicCompletionCallback {
@@ -82,7 +83,8 @@ public class MusicService extends Service implements NotificationCallback, Music
                 .setSubText("Sub text")
                 .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
-                .setPriority(NotificationCompat.PRIORITY_LOW);
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSound(null);
 
         startForeground(NOTIFICATION_ID, builder.build());
 
@@ -97,9 +99,9 @@ public class MusicService extends Service implements NotificationCallback, Music
 
             if (action.equals("PLAY")) {
                 Uri musicUri = intent.getParcelableExtra("URI");
-                if (checkNotification()) {
-                    updateNotification(new File(String.valueOf(musicUri)));
-                }
+//                if (checkNotification()) {
+//                    updateNotification(new File(String.valueOf(musicUri)));
+//                }
                 playMusic(musicUri);
             } else if (action.equals("PAUSE")) {
                 pauseMusic();
@@ -189,7 +191,7 @@ public class MusicService extends Service implements NotificationCallback, Music
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if(MediaPlayer.getInstance().isPause()){
             notificationManager.notify(NOTIFICATION_ID, builder.build());
-//            stopForeground(false);
+            stopForeground(false);
         }else{
             startForeground(NOTIFICATION_ID,builder.build());
         }
