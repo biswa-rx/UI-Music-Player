@@ -1,6 +1,7 @@
 package com.example.music.drawer_fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.music.Adapters.RecentActivityAdapter;
 import com.example.music.FileAccess.playListModel;
+import com.example.music.MainActivity;
 import com.example.music.Models.RecentActivityModels;
 import com.example.music.R;
 import com.example.music.ViewModel.SharedViewModel;
@@ -87,23 +89,31 @@ public class ListenNow extends Fragment implements RecentActivityAdapter.OnItemC
         sharedViewModel.getAllSongList().observe(getViewLifecycleOwner(), new Observer<ArrayList<File>>() {
             @Override
             public void onChanged(ArrayList<File> files) {
-//                list.remove(1);
                 list.add(1,new RecentActivityModels(R.drawable.icon,"All song",files.size()+""));
                 recentActivityAdapter.notifyDataSetChanged();
                 loadSongProgress.setVisibility(View.GONE);
                 tvPath.setText("Recently Played");
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("MusicPreferences", Context.MODE_PRIVATE);
+                if(sharedPreferences.getInt("PlaylistNumber",-1) == -1){
+                    sharedViewModel.setMutableCurrentSongList(sharedViewModel.getAllSongList().getValue());
+                }else{
+                    sharedViewModel.setMutableCurrentSongListFromFolder(sharedPreferences.getInt("PlaylistNumber",-1));
+                }
+                sharedViewModel.setCurrentSongNumber(sharedPreferences.getInt("SongNumber",0));
             }
         });
     }
-
+public static int selectedPlaylistNumber;
     @Override
     public void onItemClick(int position) {
         if(position>=2) {
             navController.navigate(R.id.action_listenNow_to_fragment_song_list);
             sharedViewModel.setMutableCurrentSongListFromFolder(position - 2);
+            selectedPlaylistNumber = position - 2;
         }else if(position==1){
             navController.navigate(R.id.action_listenNow_to_fragment_song_list);
             sharedViewModel.setMutableCurrentSongList(sharedViewModel.getAllSongList().getValue());
+            selectedPlaylistNumber = -1;
         }
     }
     public static void setProgress(int max,int progress){

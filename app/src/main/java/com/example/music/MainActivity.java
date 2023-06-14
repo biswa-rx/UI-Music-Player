@@ -5,8 +5,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,6 +35,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.music.Media.MusicController;
+import com.example.music.Notification.MusicService;
 import com.example.music.Utils.MediaData;
 import com.example.music.Utils.PlaySerializer;
 import com.example.music.ViewModel.SharedViewModel;
@@ -40,6 +43,7 @@ import com.example.music.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         mainUiPlayBT = findViewById(R.id.play_button_main_ui);
         mainUiPlayBT.setChecked(true);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MusicPreferences", Context.MODE_PRIVATE);
+
 
         bottom_sheet_player = findViewById(R.id.botton_sheet_view_triger);
         bottom_sheet_player.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +109,28 @@ public class MainActivity extends AppCompatActivity {
                         MusicController.getInstance().pauseMusic();
                     }
                 } else {
-                    if (sharedViewModel.getCurrentSong().getValue() == null) {
+                    if (sharedViewModel.getCurrentSong().getValue() == null || !MusicController.getInstance().isMusicPlaying()) {
                         System.out.println("Nothing to  play... Here I have to implement shared preference for previous playlist detect and play");
+                        if(sharedPreferences.getInt("PlaylistNumber",-1) == -1){
+                            System.out.println("Playlist "+ -1);
+                            sharedViewModel.setMutableCurrentSongList(sharedViewModel.getAllSongList().getValue());
+                        }else{
+                            System.out.println("Playlist "+sharedPreferences.getInt("PlaylistNumber ",-1));
+                            System.out.println("SongNumber "+sharedPreferences.getInt("SongNumber ",0));
+                            sharedViewModel.setMutableCurrentSongListFromFolder(sharedPreferences.getInt("PlaylistNumber",-1));
+                        }
+                        sharedViewModel.setCurrentSongNumber(sharedPreferences.getInt("SongNumber",0));
+                        ArrayList<File> songList = sharedViewModel.getCurrentSongList().getValue();
+                        PlaySerializer.getInstance().setMusicList(songList);
+                        PlaySerializer.getInstance().setSelectedIndex(sharedPreferences.getInt("SongNumber",0));
+                        File file = songList.get(sharedPreferences.getInt("SongNumber",0));
+                        Uri uri = Uri.parse(file.toString());
+                        Intent playIntent = new Intent(getApplicationContext(), MusicService.class);
+                        playIntent.setAction("PLAY");
+                        playIntent.putExtra("URI", uri);
+                        getApplicationContext().startService(playIntent);
+                        MusicController.getInstance().setSongNumber(sharedPreferences.getInt("SongNumber",0));
+
                     } else {
                         MusicController.getInstance().justPlay();
                     }
@@ -117,9 +143,7 @@ public class MainActivity extends AppCompatActivity {
         sharedViewModel.getCurrentSong().observe(this, new Observer<File>() {
             @Override
             public void onChanged(File file) {
-                mainUiPlayBT.setChecked(false);
                 tvMainSongName.setText(file.getName().replace(".mp3", ""));
-
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -217,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (MusicController.getInstance().isMusicPaused()) {
+        if (MusicController.getInstance().isMusicPaused() || !MusicController.getInstance().isMusicPlaying()) {
             mainUiPlayBT.setChecked(true);
         } else {
             mainUiPlayBT.setChecked(false);

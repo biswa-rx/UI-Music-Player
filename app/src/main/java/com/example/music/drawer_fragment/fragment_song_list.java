@@ -37,6 +37,7 @@ public class fragment_song_list extends Fragment implements songListAdapter.OnSo
         recyclerView = view.findViewById(R.id.song_list_rv);
         songList = new ArrayList<>();
         sharedViewModel.getCurrentSongList().observe(getViewLifecycleOwner(), files -> {
+            songList.clear();
             PlaySerializer.getInstance().setMusicList(files);
             for (int i = 0; i < files.size(); i++) {
                 songList.add(new songListModel(files.get(i).getName(), files.get(i).getPath()));

@@ -20,12 +20,8 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         if (action != null && action.equals("ACTION_PLAY")) {
             if (MusicController.getInstance().isMusicPaused()) {
                 MusicController.getInstance().justPlay();
-                Intent updateIntent = new Intent("com.example.ACTION_MUSIC");
-                LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(updateIntent);
             } else {
                 MusicController.getInstance().pauseMusic();
-                Intent updateIntent = new Intent("com.example.ACTION_MUSIC");
-                LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(updateIntent);
             }
         } else if (action != null && action.equals("ACTION_NEXT")) {
             MusicController.getInstance().playMusic(context.getApplicationContext(), Uri.parse(PlaySerializer.getInstance().getNextMusicFile(PlaySerializer.getInstance().getPlayMode()).toString()));
