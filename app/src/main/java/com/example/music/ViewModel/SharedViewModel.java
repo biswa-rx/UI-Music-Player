@@ -2,6 +2,7 @@ package com.example.music.ViewModel;
 
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -60,11 +61,15 @@ public class SharedViewModel extends ViewModel {
         mutableCurrentSong.setValue(file);
     }
     public void setCurrentSongNumber(int position){
-//        if(mutableCurrentSongList.getValue()!= null) {
-            File tempSongList = mutableCurrentSongList.getValue().get(position);
-            mutableCurrentSong.setValue(tempSongList);
-            currentSongNumber.setValue(position);
-//        }
+        if(mutableCurrentSongList.getValue()!= null) {
+            if(getCurrentSongListSize() > position && position >= 0) {
+                File tempSongList = mutableCurrentSongList.getValue().get(position);
+                mutableCurrentSong.setValue(tempSongList);
+                currentSongNumber.setValue(position);
+            }else{
+                Log.e(TAG, "setCurrentSongNumber: Current song number out of bound of current playlist size" );
+            }
+        }
     }
     public LiveData<Integer> getLiveCurrentSongNumber() {
         return currentSongNumber;
