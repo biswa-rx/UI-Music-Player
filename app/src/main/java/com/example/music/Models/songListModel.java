@@ -1,16 +1,16 @@
 package com.example.music.Models;
 
+import android.media.MediaMetadataRetriever;
+
 public class songListModel {
     private String songName;
-    private String songDuration;
+    private String artistName;
     private String path;
 
-    public songListModel(String songName, String songDuration,String path) {
+    public songListModel(String songName,String path) {
         this.songName = songName;
-        this.songDuration = songDuration;
         this.path = path;
     }
-
     public songListModel() {
     }
 
@@ -22,12 +22,12 @@ public class songListModel {
         this.songName = songName;
     }
 
-    public String getSongDuration() {
-        return songDuration;
-    }
-
-    public void setSongDuration(String songDuration) {
-        this.songDuration = songDuration;
+    public String getSongArtist() {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(path);
+        return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) == null
+                        ? "Unknown artist"
+                : retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
     }
 
     public String getPath() {
